@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_language_from"
+        android:title="@string/choose_language_for_translate"
+        yourapp:actionViewClass="androidx.appcompat.widget.SearchView"
+        yourapp:showAsAction="always|collapseActionView"/>
+    <item
+        android:id="@+id/from_translate_to"
+        android:icon="@drawable/ic_arrow_translate_24dp"
+        android:title="@string/translate_into"
+        yourapp:showAsAction="always"/>
+    <item
+        android:id="@+id/action_language_to"
+        android:title="@string/choose_language_to_translate"
+        yourapp:actionViewClass="androidx.appcompat.widget.SearchView"
+        yourapp:showAsAction="always|collapseActionView"/>
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_globe_24dp"
+        android:title="@string/translate_settings"
+        yourapp:showAsAction="always"/>
+    <item
+        android:id="@+id/action_edit"
+        android:title="@string/settings"
+        yourapp:showAsAction="ifRoom"/>
+</menu>

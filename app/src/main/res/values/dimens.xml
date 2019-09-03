@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_xmedium">20dp</dimen>
+    <dimen name="margin_xxmedium">24dp</dimen>
+    <dimen name="margin_xxxmedium">32dp</dimen>
+    <dimen name="margin_small_giant">32dp</dimen>
+    <dimen name="margin_giant">72dp</dimen>
+    <dimen name="margin_giant_x">96dp</dimen>
+    <dimen name="margin_giant_xxx">144dp</dimen>
+
+    <dimen name="image_height">228dp</dimen>
+
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_xmedium">20sp</dimen>
+    <dimen name="text_size_big">24sp</dimen>
+    <dimen name="text_size_xbig">28sp</dimen>
+</resources>

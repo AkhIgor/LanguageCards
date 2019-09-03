@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textCursorDrawable">@drawable/ic_cursor_text_24dp</item>
+        <item name="queryBackground">@color/colorAccent</item>
+        <item name="searchIcon">@drawable/ic_globe_24dp</item>
+        <item name="closeIcon">@drawable/ic_cross_24dp</item>
+        <item name="queryHint">@string/choose_language_to_translate</item>
+        <item name="android:imeActionId">6</item>
+    </style>
+
+</resources>

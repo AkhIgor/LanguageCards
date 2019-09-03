@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorPrimaryBright">
+
+    <data class="CreatingCardDataBinding">
+
+        <import type="android.view.View"/>
+        <import type="com.igor.langugecards.presentation.viewmodel.Converter"/>
+
+        <variable
+            name="viewModel"
+            type="com.igor.langugecards.presentation.viewmodel.CreatingCardViewModel"/>
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.view.fragment.CreatingCardFragment">
+
+    <!--<include-->
+        <!--layout="@layout/toolbar"/>-->
+
+    <EditText
+        android:id="@+id/creating_card_theme_text"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:gravity="center"
+        android:hint="@string/theme"
+        android:text="@={viewModel.theme}"
+        android:textSize="@dimen/text_size_xbig"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/creating_card_translated_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_small_giant"
+        android:textSize="@dimen/text_size_big"
+        android:text="@{viewModel.translate}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/creating_card_theme_text"/>
+
+    <TextView
+        android:id="@+id/creating_card_transcription_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:textSize="@dimen/text_size_xmedium"
+        android:text="@{viewModel.transcription}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/creating_card_translated_word"/>
+
+    <EditText
+        android:id="@+id/creating_card_native_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_giant"
+        android:hint="@string/enter_word"
+        android:textSize="@dimen/text_size_big"
+        android:onTextChanged="@{(text, start, before, count) -> viewModel.onTranslatedWordChanged(text)}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/creating_card_transcription_text"/>
+
+    <ProgressBar
+        android:id="@+id/creating_card_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="@{!viewModel.progress ? View.GONE : View.VISIBLE}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <Button
+        android:id="@+id/creating_card_add_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginBottom="@dimen/margin_xxmedium"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:text="@string/add_card"
+        android:textAllCaps="true"
+        android:onClick="@{() -> viewModel.saveCard()}"
+        android:enabled="@{!viewModel.nativeWord.isEmpty() &amp;&amp; !viewModel.translate.isEmpty()}"
+        android:textColor="@color/colorPrimaryBright"
+        android:background="@color/colorAccent"
+        style="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
