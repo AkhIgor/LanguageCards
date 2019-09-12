@@ -10,6 +10,5 @@
     <string name="choose_language_to_translate">Выберите язык перевода</string>
     <string name="translate_from">Перевести c:</string>
     <string name="translate_into">Перевести на:</string>
-    <string name="settings">Настройки</string>
     <string name="translate_settings">Настройки перевода</string>
 </resources>

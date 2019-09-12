@@ -33,6 +33,7 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
     @Override
     protected void initViews(@NonNull View layout) {
+        mProgress = layout.findViewById(R.id.set_translate_language_progress_bar);
         mLanguageFrom = layout.findViewById(R.id.translate_language_from_text_view);
         mLanguageInto = layout.findViewById(R.id.translate_language_to_text_view);
         mLanguagesListFrom = layout.findViewById(R.id.languages_list_from);

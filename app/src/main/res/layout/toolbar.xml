@@ -5,4 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="?android:actionBarSize"
     android:background="@color/colorPrimaryDark"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    app:logo="@drawable/ic_globe_24dp"
+    app:navigationIcon="@drawable/ic_cross_24dp"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>

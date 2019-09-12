@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity
 
     private ApplicationRouter mRouter;
     private Class mActiveFragmentClass;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         mRouter = new ApplicationRouterImpl(this);
+        mToolbar = findViewById(R.id.toolbar_actionbar);
     }
 
     private void showMenu() {
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
+        setupViews();
         showMenu();
     }
 
@@ -52,19 +55,18 @@ public class MainActivity extends AppCompatActivity
 
 
     public void setToolbar(@Nullable ToolbarConfiguration configuration, boolean showHomeButton) {
-        Toolbar toolbar = findViewById(R.id.toolbar_actionbar);
-        if(showHomeButton) {
-            toolbar.setNavigationIcon(R.drawable.ic_cross_24dp);
-            toolbar.setNavigationOnClickListener(v -> getRouter().goHome());
+        if (mToolbar.getNavigationIcon() != null) {
+            mToolbar.getNavigationIcon().setVisible(showHomeButton, true);
         }
         if (configuration != null) {
-            toolbar.setTitle(configuration.getTitle());
-            toolbar.setSubtitle(configuration.getSubtitleRes());
+            mToolbar.getLogo().setVisible(false, false);
+            mToolbar.setTitle(configuration.getTitle());
+            mToolbar.setSubtitle(configuration.getSubtitleRes());
         } else {
             ToolbarConfiguration defConfiguration = ToolbarConfiguration.getDefaultToolbarConfiguration();
-            toolbar.setLogo(defConfiguration.getLogoRes());
+            mToolbar.getLogo().setVisible(defConfiguration.isLogoRes(), false);
+            mToolbar.setSubtitle(null);
         }
-
     }
 
     @NonNull
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity
             mActiveFragmentClass = fragment.getClass();
         }
     }
+
     @Override
     public void popBackStack() {
 
@@ -92,5 +95,10 @@ public class MainActivity extends AppCompatActivity
 
     public ApplicationRouter getRouter() {
         return mRouter;
+    }
+
+    private void setupViews() {
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(v -> getRouter().goHome());
     }
 }

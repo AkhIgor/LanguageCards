@@ -6,8 +6,7 @@ import com.igor.langugecards.R;
 
 public class ToolbarConfiguration {
 
-    @DrawableRes
-    private int mLogoRes;
+    private boolean mLogoRes;
 
     private String mTitle;
 
@@ -15,11 +14,11 @@ public class ToolbarConfiguration {
     @DrawableRes
     private int mHomeButtonRes;
 
-    public int getLogoRes() {
+    public boolean isLogoRes() {
         return mLogoRes;
     }
 
-    public void setLogoRes(int logoRes) {
+    public void setLogoRes(boolean logoRes) {
         mLogoRes = logoRes;
     }
 
@@ -49,7 +48,7 @@ public class ToolbarConfiguration {
 
     public static ToolbarConfiguration getDefaultToolbarConfiguration() {
         ToolbarConfiguration configuration = new ToolbarConfiguration();
-        configuration.setLogoRes(R.drawable.ic_globe_24dp);
+        configuration.setLogoRes(true);
         return configuration;
     }
 }
