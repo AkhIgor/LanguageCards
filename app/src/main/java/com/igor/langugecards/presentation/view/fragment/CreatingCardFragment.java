@@ -66,13 +66,14 @@ public class CreatingCardFragment extends ApplicationFragment {
     @Override
     protected void setToolbar() {
         ToolbarConfiguration configuration = new ToolbarConfiguration();
+        configuration.setHomeButton(R.drawable.ic_cross_24dp);
         String translateFrom = getActivity().getString(R.string.translate_from);
         String languageFrom = "";
         configuration.setTitle(translateFrom + " " + languageFrom);
         String translateInto = getActivity().getString(R.string.translate_into);
         String languageInto = "";
-        configuration.setSubtitleRes(translateInto + " " + languageInto);
-        ((MainActivity) getActivity()).setToolbar(configuration, true);
+        configuration.setSubtitle(translateInto + " " + languageInto);
+        ((MainActivity) getActivity()).setToolbar(configuration);
     }
 
     @Override

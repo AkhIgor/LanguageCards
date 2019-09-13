@@ -1,6 +1,9 @@
 package com.igor.langugecards.presentation.view.fragment;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -8,12 +11,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.library.baseAdapters.BR;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.igor.langugecards.R;
+import com.igor.langugecards.database.TranslateSettingInteractor;
+import com.igor.langugecards.databinding.CreatingCardDataBinding;
+import com.igor.langugecards.network.interactor.GetLanguagesInteractor;
+import com.igor.langugecards.network.interactor.TranslateInteractor;
+import com.igor.langugecards.presentation.viewmodel.CreatingCardViewModel;
 import com.igor.langugecards.presentation.viewmodel.SetTranslateLanguagesViewModel;
+import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory;
 
 import java.util.Collection;
-import java.util.List;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
@@ -27,13 +40,21 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
     private ArrayAdapter<String> mAdapter;
 
-    private SetTranslateLanguagesFragment getInstance() {
+    public static SetTranslateLanguagesFragment getInstance() {
         return new SetTranslateLanguagesFragment();
     }
 
+
     @Override
     protected void initViews(@NonNull View layout) {
-        mProgress = layout.findViewById(R.id.set_translate_language_progress_bar);
+
+        mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
+                () -> new SetTranslateLanguagesViewModel(new GetLanguagesInteractor(),
+                        new TranslateSettingInteractor(),
+                        new CompositeDisposable())))
+                .get(SetTranslateLanguagesViewModel.class);
+
+        mProgress = layout.findViewById(R.id.translate_language_progress_bar);
         mLanguageFrom = layout.findViewById(R.id.translate_language_from_text_view);
         mLanguageInto = layout.findViewById(R.id.translate_language_to_text_view);
         mLanguagesListFrom = layout.findViewById(R.id.languages_list_from);

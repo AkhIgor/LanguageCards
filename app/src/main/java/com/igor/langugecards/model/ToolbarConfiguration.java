@@ -1,25 +1,29 @@
 package com.igor.langugecards.model;
 
+import android.content.Context;
+
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
 import com.igor.langugecards.R;
 
 public class ToolbarConfiguration {
 
-    private boolean mLogoRes;
+    public static final int NO_HOME_BUTTON = -1;
+
+    @DrawableRes
+    private int mHomeButton;
 
     private String mTitle;
 
     private String mSubtitle;
-    @DrawableRes
-    private int mHomeButtonRes;
 
-    public boolean isLogoRes() {
-        return mLogoRes;
+    public int getHomeButton() {
+        return mHomeButton;
     }
 
-    public void setLogoRes(boolean logoRes) {
-        mLogoRes = logoRes;
+    public void setHomeButton(int homeButton) {
+        mHomeButton = homeButton;
     }
 
     public String getTitle() {
@@ -30,25 +34,20 @@ public class ToolbarConfiguration {
         mTitle = title;
     }
 
-    public String getSubtitleRes() {
+    public String getSubtitle() {
         return mSubtitle;
     }
 
-    public void setSubtitleRes(String subtitleRes) {
+    public void setSubtitle(String subtitleRes) {
         mSubtitle = subtitleRes;
     }
 
-    public int getHomeButtonRes() {
-        return mHomeButtonRes;
-    }
 
-    public void setHomeButtonRes(int homeButtonRes) {
-        mHomeButtonRes = homeButtonRes;
-    }
-
-    public static ToolbarConfiguration getDefaultToolbarConfiguration() {
+    public static ToolbarConfiguration defaultToolbarConfiguration(@NonNull Context context) {
         ToolbarConfiguration configuration = new ToolbarConfiguration();
-        configuration.setLogoRes(true);
+        configuration.setHomeButton(NO_HOME_BUTTON);
+        configuration.setTitle(context.getString(R.string.app_name));
+        configuration.setSubtitle(null);
         return configuration;
     }
 }
