@@ -3,6 +3,7 @@ package com.igor.langugecards.presentation.view.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,9 @@ import com.igor.langugecards.presentation.router.ApplicationRouter;
 import com.igor.langugecards.presentation.router.ApplicationRouterImpl;
 import com.igor.langugecards.presentation.router.FragmentContainer;
 import com.igor.langugecards.presentation.view.fragment.MainMenuFragment;
+import com.igor.langugecards.presentation.view.fragment.SetTranslateLanguagesFragment;
+
+import static com.igor.langugecards.model.ToolbarConfiguration.HOME_BUTTON_RES;
 
 public class MainActivity extends AppCompatActivity
         implements FragmentContainer {
@@ -53,20 +57,31 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.translate_settings : {
+                showFragment(SetTranslateLanguagesFragment.getInstance(), true);
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void setToolbar(@Nullable ToolbarConfiguration configuration, boolean showHomeButton) {
-        if (mToolbar.getNavigationIcon() != null) {
-            mToolbar.getNavigationIcon().setVisible(showHomeButton, true);
+        if(configuration == null) {
+            configuration = ToolbarConfiguration.getDefaultToolbarConfiguration();
         }
-        if (configuration != null) {
-            mToolbar.getLogo().setVisible(false, false);
-            mToolbar.setTitle(configuration.getTitle());
-            mToolbar.setSubtitle(configuration.getSubtitleRes());
+        if(configuration.getTitle() == null) {
+            configuration.setTitle(getString(R.string.app_name));
+        }
+        if(showHomeButton) {
+            mToolbar.setNavigationIcon(HOME_BUTTON_RES);
         } else {
-            ToolbarConfiguration defConfiguration = ToolbarConfiguration.getDefaultToolbarConfiguration();
-            mToolbar.getLogo().setVisible(defConfiguration.isLogoRes(), false);
-            mToolbar.setSubtitle(null);
+            mToolbar.setNavigationIcon(null);
         }
+        mToolbar.setTitle(configuration.getTitle());
+        mToolbar.setSubtitle(configuration.getSubtitle());
     }
 
     @NonNull

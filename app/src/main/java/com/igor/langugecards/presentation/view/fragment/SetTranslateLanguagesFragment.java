@@ -1,19 +1,24 @@
 package com.igor.langugecards.presentation.view.fragment;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.igor.langugecards.R;
+import com.igor.langugecards.database.TranslateSettingInteractor;
+import com.igor.langugecards.network.interactor.GetLanguagesInteractor;
 import com.igor.langugecards.presentation.viewmodel.SetTranslateLanguagesViewModel;
+import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory;
 
 import java.util.Collection;
-import java.util.List;
 
 public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
@@ -27,8 +32,18 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
     private ArrayAdapter<String> mAdapter;
 
-    private SetTranslateLanguagesFragment getInstance() {
+    public static SetTranslateLanguagesFragment getInstance() {
         return new SetTranslateLanguagesFragment();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
+                () -> new SetTranslateLanguagesViewModel(getActivity(),
+                        new GetLanguagesInteractor())))
+                .get(SetTranslateLanguagesViewModel.class);
+
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -43,10 +58,16 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
     @Override
     protected void setUpViews() {
         mViewModel.fromLanguageChanged().observe(this,
-                newLanguage -> mLanguageFrom.setText(newLanguage));
+                newLanguage -> {
+                    mLanguageFrom.setText(newLanguage);
+                    mLanguagesListFrom.setVisibility(View.GONE);
+                });
 
         mViewModel.targetLanguageChanged().observe(this,
-                newLanguage -> mLanguageInto.setText(newLanguage));
+                newLanguage -> {
+                    mLanguageInto.setText(newLanguage);
+                    mLanguagesListInto.setVisibility(View.GONE);
+                });
 
         mViewModel.progressChanged().observe(this,
                 active -> mProgress.setVisibility(active ? View.VISIBLE : View.GONE));
@@ -54,11 +75,11 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
         mViewModel.languagesSetted().observe(this,
                 languages -> setLanguagesToList(languages.values()));
 
-        mLanguageFrom.setOnClickListener(v -> onLanguageSetClickListener(mLanguagesListFrom));
-        mLanguageInto.setOnClickListener(v -> onLanguageSetClickListener(mLanguagesListInto));
+        mLanguageFrom.setOnClickListener(v -> onLanguageSetClickListener(mLanguagesListFrom, mLanguagesListInto));
+        mLanguageInto.setOnClickListener(v -> onLanguageSetClickListener(mLanguagesListInto, mLanguagesListFrom));
 
-        mLanguagesListFrom.setOnItemClickListener(this::onListItemClickListener);
-        mLanguagesListInto.setOnItemClickListener(this::onListItemClickListener);
+        mLanguagesListFrom.setOnItemClickListener((adapterView, view, position, id) -> onListItemClickListener(adapterView, position));
+        mLanguagesListInto.setOnItemClickListener((adapterView, view, position, id) -> onListItemClickListener(adapterView, position));
     }
 
     @Override
@@ -77,21 +98,26 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
     }
 
     private void setLanguagesToList(Collection<String> languages) {
-        mAdapter = new ArrayAdapter<>(getActivity(), languages.size());
+        mAdapter = new ArrayAdapter<>(getActivity(), R.layout.languages_list_item, R.id.language_text_view);
         mAdapter.addAll(languages);
         mLanguagesListFrom.setAdapter(mAdapter);
         mLanguagesListInto.setAdapter(mAdapter);
     }
 
-    private void onLanguageSetClickListener(@NonNull ListView list) {
-        if (list.getVisibility() == View.VISIBLE) {
-            list.setVisibility(View.GONE);
-        } else {
-            list.setVisibility(View.VISIBLE);
+    private void onLanguageSetClickListener(@NonNull ListView mainList, @NonNull ListView dependedList) {
+        if (mainList.getAdapter() != null) {
+            if (mainList.getVisibility() == View.VISIBLE) {
+                mainList.setVisibility(View.GONE);
+            } else {
+                mainList.setVisibility(View.VISIBLE);
+                if (dependedList.getVisibility() == View.VISIBLE) {
+                    dependedList.setVisibility(View.GONE);
+                }
+            }
         }
     }
 
-    private void onListItemClickListener(AdapterView<?> parent, View view, int position, long id) {
+    private void onListItemClickListener(View view, int position) {
         switch (view.getId()) {
             case R.id.languages_list_from: {
                 mViewModel.setFromLanguage(mAdapter.getItem(position));

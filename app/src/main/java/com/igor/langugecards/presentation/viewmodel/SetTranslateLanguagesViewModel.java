@@ -1,5 +1,6 @@
 package com.igor.langugecards.presentation.viewmodel;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,13 +17,13 @@ import java.util.Set;
 
 import io.reactivex.disposables.CompositeDisposable;
 
+import static com.igor.langugecards.database.TranslateSettingInteractor.FROM;
+import static com.igor.langugecards.database.TranslateSettingInteractor.TO;
+
 public class SetTranslateLanguagesViewModel extends ViewModel {
 
-    private static final String FROM_LANGUAGE = "from language";
-    private static final String TO_LANGUAGE = "to language";
-
+    private Context mContext;
     private GetLanguagesInteractor mInteractor;
-    private TranslateSettingInteractor mSettingsInteractor;
     private CompositeDisposable mDisposable;
 
     private MutableLiveData<String> mFromLanguageChangedAction = new MutableLiveData<>();
@@ -30,12 +31,11 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
     private MutableLiveData<Boolean> mProgress = new MutableLiveData<>();
     private MutableLiveData<Map<String, String>> mPossibleLanguages = new MutableLiveData<>();
 
-    public SetTranslateLanguagesViewModel(@NonNull GetLanguagesInteractor interactor,
-                                          @NonNull TranslateSettingInteractor settingsInteractor,
-                                          @NonNull CompositeDisposable disposable) {
+    public SetTranslateLanguagesViewModel(@NonNull Context context,
+                                          @NonNull GetLanguagesInteractor interactor) {
+        mContext = context;
         mInteractor = interactor;
-        mSettingsInteractor = settingsInteractor;
-        mDisposable = disposable;
+        mDisposable = new CompositeDisposable();
 
         getLanguages();
     }
@@ -59,16 +59,18 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
     public void setFromLanguage(String language) {
         mFromLanguageChangedAction.postValue(language);
 
-        mSettingsInteractor.writeTranslateSettings(FROM_LANGUAGE,
-                findLanguageCode(language),
-                language);
+        TranslateSettingInteractor.writeTranslateSettings(FROM,
+                mContext,
+                language,
+                findLanguageCode(language));
     }
 
     public void setTargetLanguage(String language) {
-        mFromLanguageChangedAction.postValue(language);
-        mSettingsInteractor.writeTranslateSettings(TO_LANGUAGE,
-                findLanguageCode(language),
-                language);
+        mTargetLanguageChangedAction.postValue(language);
+        TranslateSettingInteractor.writeTranslateSettings(TO,
+                mContext,
+                language,
+                findLanguageCode(language));
     }
 
     private void getLanguages() {

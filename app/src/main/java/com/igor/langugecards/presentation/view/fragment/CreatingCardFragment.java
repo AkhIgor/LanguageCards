@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.igor.langugecards.R;
 import com.igor.langugecards.databinding.CreatingCardDataBinding;
 import com.igor.langugecards.model.ToolbarConfiguration;
+import com.igor.langugecards.model.TranslateSettings;
 import com.igor.langugecards.network.interactor.TranslateInteractor;
 import com.igor.langugecards.presentation.view.activity.MainActivity;
 import com.igor.langugecards.presentation.viewmodel.CreatingCardViewModel;
@@ -22,7 +23,7 @@ import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory;
 public class CreatingCardFragment extends ApplicationFragment {
 
     private CreatingCardViewModel mViewModel;
-
+    private TranslateSettings mTanslateSettings;
 
     public static CreatingCardFragment newInstance() {
         return new CreatingCardFragment();
@@ -35,7 +36,8 @@ public class CreatingCardFragment extends ApplicationFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
-                () -> new CreatingCardViewModel(new TranslateInteractor())))
+                () -> new CreatingCardViewModel(getActivity(),
+                        new TranslateInteractor())))
                 .get(CreatingCardViewModel.class);
 
         CreatingCardDataBinding binding = DataBindingUtil.inflate(inflater,
@@ -56,11 +58,11 @@ public class CreatingCardFragment extends ApplicationFragment {
 
     @Override
     protected void initViews(@NonNull View layout) {
-
     }
 
     @Override
     protected void setUpViews() {
+        mViewModel.getTranslateSettings().observe(this, this::showSettings);
     }
 
     @Override
@@ -71,12 +73,23 @@ public class CreatingCardFragment extends ApplicationFragment {
         configuration.setTitle(translateFrom + " " + languageFrom);
         String translateInto = getActivity().getString(R.string.translate_into);
         String languageInto = "";
-        configuration.setSubtitleRes(translateInto + " " + languageInto);
+        configuration.setSubtitle(translateInto + " " + languageInto);
         ((MainActivity) getActivity()).setToolbar(configuration, true);
     }
 
     @Override
     protected void readArguments() {
 
+    }
+
+    private void showSettings(TranslateSettings settings) {
+        ToolbarConfiguration configuration = new ToolbarConfiguration();
+        String translateFrom = getActivity().getString(R.string.translate_from);
+        String languageFrom = settings.getLanguageFrom();
+        configuration.setTitle(translateFrom + " " + languageFrom);
+        String translateInto = getActivity().getString(R.string.translate_into);
+        String languageInto = settings.getLanguageTo();
+        configuration.setSubtitle(translateInto + " " + languageInto);
+        ((MainActivity) getActivity()).setToolbar(configuration, true);
     }
 }

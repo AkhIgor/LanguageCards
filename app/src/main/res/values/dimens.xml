@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <dimen name="divider_height">1dp</dimen>
+
+    <dimen name="list_height">300dp</dimen>
+
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_xmedium">20dp</dimen>
