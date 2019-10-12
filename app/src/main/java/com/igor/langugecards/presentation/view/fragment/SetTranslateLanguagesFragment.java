@@ -10,10 +10,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.igor.langugecards.R;
-import com.igor.langugecards.database.TranslateSettingInteractor;
+import com.igor.langugecards.databinding.TranslateLanguagesDataBinding;
 import com.igor.langugecards.network.interactor.GetLanguagesInteractor;
 import com.igor.langugecards.presentation.viewmodel.SetTranslateLanguagesViewModel;
 import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory;
@@ -36,19 +37,33 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
         return new SetTranslateLanguagesFragment();
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
-                () -> new SetTranslateLanguagesViewModel(getActivity(),
+                () -> new SetTranslateLanguagesViewModel(requireActivity(),
                         new GetLanguagesInteractor())))
                 .get(SetTranslateLanguagesViewModel.class);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        TranslateLanguagesDataBinding binding = DataBindingUtil.inflate(inflater,
+                getLayoutRes(),
+                container,
+                false);
+
+        binding.setVariable(com.igor.langugecards.BR.viewModel, mViewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        return binding.getRoot();
     }
 
     @Override
     protected void initViews(@NonNull View layout) {
-        mProgress = layout.findViewById(R.id.set_translate_language_progress_bar);
+
+        mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
+                () -> new SetTranslateLanguagesViewModel(requireActivity(),
+                        new GetLanguagesInteractor())))
+                .get(SetTranslateLanguagesViewModel.class);
+
+        mProgress = layout.findViewById(R.id.translate_language_progress_bar);
         mLanguageFrom = layout.findViewById(R.id.translate_language_from_text_view);
         mLanguageInto = layout.findViewById(R.id.translate_language_to_text_view);
         mLanguagesListFrom = layout.findViewById(R.id.languages_list_from);
@@ -74,6 +89,8 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
         mViewModel.languagesSetted().observe(this,
                 languages -> setLanguagesToList(languages.values()));
+
+        mViewModel.onCloseEvent().observe(this, v -> requireActivity().onBackPressed());
 
         mLanguageFrom.setOnClickListener(v -> onLanguageSetClickListener(mLanguagesListFrom, mLanguagesListInto));
         mLanguageInto.setOnClickListener(v -> onLanguageSetClickListener(mLanguagesListInto, mLanguagesListFrom));

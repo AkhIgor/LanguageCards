@@ -22,6 +22,7 @@ import com.igor.langugecards.presentation.view.fragment.MainMenuFragment;
 import com.igor.langugecards.presentation.view.fragment.SetTranslateLanguagesFragment;
 
 import static com.igor.langugecards.model.ToolbarConfiguration.HOME_BUTTON_RES;
+import com.igor.langugecards.presentation.view.fragment.SetTranslateLanguagesFragment;
 
 public class MainActivity extends AppCompatActivity
         implements FragmentContainer {

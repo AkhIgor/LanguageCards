@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.library.baseAdapters.BR;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.igor.langugecards.R;
@@ -45,7 +44,7 @@ public class CreatingCardFragment extends ApplicationFragment {
                 container,
                 false);
 
-        binding.setVariable(BR.viewModel, mViewModel);
+        binding.setVariable(com.igor.langugecards.BR.viewModel, mViewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
         return binding.getRoot();
     }
@@ -58,6 +57,7 @@ public class CreatingCardFragment extends ApplicationFragment {
 
     @Override
     protected void initViews(@NonNull View layout) {
+
     }
 
     @Override

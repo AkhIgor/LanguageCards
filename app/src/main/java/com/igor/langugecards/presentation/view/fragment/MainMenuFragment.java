@@ -10,6 +10,8 @@ import com.igor.langugecards.R;
 import com.igor.langugecards.presentation.view.activity.MainActivity;
 import com.igor.langugecards.presentation.viewmodel.MainMenuViewModel;
 
+import static com.igor.langugecards.model.ToolbarConfiguration.getDefaultToolbarConfiguration;
+
 public class MainMenuFragment extends ApplicationFragment {
 
     private Button mCreateCardButton;
@@ -45,7 +47,7 @@ public class MainMenuFragment extends ApplicationFragment {
 
     @Override
     protected void setToolbar() {
-        ((MainActivity) getActivity()).setToolbar(null, false);
+        ((MainActivity) getActivity()).setToolbar(getDefaultToolbarConfiguration(), false);
     }
 
     @Override

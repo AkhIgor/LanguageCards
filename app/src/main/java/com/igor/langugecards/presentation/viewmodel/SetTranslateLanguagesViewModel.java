@@ -31,6 +31,8 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
     private MutableLiveData<Boolean> mProgress = new MutableLiveData<>();
     private MutableLiveData<Map<String, String>> mPossibleLanguages = new MutableLiveData<>();
 
+    private SingleLiveEvent<Void> mCloseEvent = new SingleLiveEvent<>();
+
     public SetTranslateLanguagesViewModel(@NonNull Context context,
                                           @NonNull GetLanguagesInteractor interactor) {
         mContext = context;
@@ -38,6 +40,7 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
         mDisposable = new CompositeDisposable();
 
         getLanguages();
+        showSettedLanguages();
     }
 
     public LiveData<String> fromLanguageChanged() {
@@ -56,6 +59,14 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
         return mPossibleLanguages;
     }
 
+    public LiveData<Void> onCloseEvent() {
+        return mCloseEvent;
+    }
+
+    public void closeEvent() {
+        mCloseEvent.call();
+    }
+
     public void setFromLanguage(String language) {
         mFromLanguageChangedAction.postValue(language);
 
@@ -71,6 +82,13 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
                 mContext,
                 language,
                 findLanguageCode(language));
+    }
+
+    private void showSettedLanguages() {
+        mFromLanguageChangedAction.postValue(TranslateSettingInteractor.readTranslateSettings(mContext)
+                .getLanguageFrom());
+        mTargetLanguageChangedAction.postValue(TranslateSettingInteractor.readTranslateSettings(mContext)
+                .getLanguageTo() );
     }
 
     private void getLanguages() {
