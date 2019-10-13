@@ -1,4 +1,4 @@
-package com.igor.langugecards.database;
+package com.igor.langugecards.database.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

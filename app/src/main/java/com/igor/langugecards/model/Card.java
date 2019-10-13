@@ -2,11 +2,15 @@ package com.igor.langugecards.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
+@Entity
 public class Card {
 
+    @PrimaryKey(autoGenerate = true)
     private long mId;
     private String mFromLanguage;
     private String mToLanguage;

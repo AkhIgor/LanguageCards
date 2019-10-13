@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.igor.langugecards.database.TranslateSettingInteractor;
+import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.model.Card;
 import com.igor.langugecards.model.TranslateSettings;
 import com.igor.langugecards.network.interactor.TranslateInteractor;

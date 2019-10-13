@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.igor.langugecards.database.TranslateSettingInteractor;
+import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.network.interactor.GetLanguagesInteractor;
 
 import java.util.Map;
@@ -17,8 +17,8 @@ import java.util.Set;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-import static com.igor.langugecards.database.TranslateSettingInteractor.FROM;
-import static com.igor.langugecards.database.TranslateSettingInteractor.TO;
+import static com.igor.langugecards.database.preferences.TranslateSettingInteractor.FROM;
+import static com.igor.langugecards.database.preferences.TranslateSettingInteractor.TO;
 
 public class SetTranslateLanguagesViewModel extends ViewModel {
 
