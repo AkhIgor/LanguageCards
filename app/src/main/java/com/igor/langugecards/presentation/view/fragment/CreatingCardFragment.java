@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ public class CreatingCardFragment extends ApplicationFragment {
 
     private CreatingCardViewModel mViewModel;
     private TranslateSettings mTanslateSettings;
+    private EditText mNativeWordEditText;
 
     public static CreatingCardFragment newInstance() {
         return new CreatingCardFragment();
@@ -49,6 +51,13 @@ public class CreatingCardFragment extends ApplicationFragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mViewModel.updateTranslateSettings();
+    }
+
     @LayoutRes
     @Override
     protected int getLayoutRes() {
@@ -57,12 +66,13 @@ public class CreatingCardFragment extends ApplicationFragment {
 
     @Override
     protected void initViews(@NonNull View layout) {
-
+        mNativeWordEditText = layout.findViewById(R.id.creating_card_native_word);
     }
 
     @Override
     protected void setUpViews() {
         mViewModel.getTranslateSettings().observe(this, this::showSettings);
+//        mNativeWordEditText.addTextChangedListener(mViewModel); - работает точно так же, как и текущая реализация
     }
 
     @Override

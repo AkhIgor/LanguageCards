@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModel;
 import com.igor.langugecards.database.TranslateSettingInteractor;
 import com.igor.langugecards.model.Card;
 import com.igor.langugecards.model.TranslateSettings;
-import com.igor.langugecards.network.model.Translate;
 import com.igor.langugecards.network.interactor.TranslateInteractor;
+import com.igor.langugecards.network.model.Translate;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +22,8 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 
 public class CreatingCardViewModel extends ViewModel {
+
+    private static final String EMPTY_STRING = "";
 
     private final Context mContext;
     private final TranslateInteractor mTranslateInteractor;
@@ -51,13 +53,11 @@ public class CreatingCardViewModel extends ViewModel {
         mDisposable = new CompositeDisposable();
 
         mDisposable.add(mUserInputSubject
-                        .debounce(250, TimeUnit.MILLISECONDS)
-                        .distinctUntilChanged()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(this::translate)
+                .debounce(250, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(this::translate)
         );
-
-        readTranslateSettings();
     }
 
     public String getTheme() {
@@ -114,10 +114,14 @@ public class CreatingCardViewModel extends ViewModel {
 
     public void onTranslatedWordChanged(@NonNull CharSequence text) {
         if (text.toString().isEmpty()) {
-            mTranslate.postValue("");
+            mTranslate.postValue(EMPTY_STRING);
         } else {
             mUserInputSubject.onNext(text.toString());
         }
+    }
+
+    public void updateTranslateSettings() {
+        readTranslateSettings();
     }
 
     private void translate(@NonNull String translatedWord) {
@@ -133,7 +137,7 @@ public class CreatingCardViewModel extends ViewModel {
 
     private void readTranslateSettings() {
         TranslateSettings translateSettings = TranslateSettingInteractor.readTranslateSettings(mContext);
-        if(translateSettings.getLanguageCodeFrom() == null ||
+        if (translateSettings.getLanguageCodeFrom() == null ||
                 translateSettings.getLanguageCodeFrom().isEmpty()) {
             translateSettings.setLanguageFrom(translateSettings.getAutoDetectingLanguage());
         }

@@ -5,12 +5,13 @@
 
     <dimen name="list_height">300dp</dimen>
 
+    <dimen name="margin_little">1dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_xmedium">20dp</dimen>
     <dimen name="margin_xxmedium">24dp</dimen>
     <dimen name="margin_xxxmedium">32dp</dimen>
-    <dimen name="margin_small_giant">32dp</dimen>
+    <dimen name="margin_small_giant">48dp</dimen>
     <dimen name="margin_giant">72dp</dimen>
     <dimen name="margin_giant_x">96dp</dimen>
     <dimen name="margin_giant_xxx">144dp</dimen>

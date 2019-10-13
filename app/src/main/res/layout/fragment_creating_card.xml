@@ -108,5 +108,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!--android:onTextChanged="@{(text, start, before, count) -> viewModel.onTranslatedWordChanged(text, count)}"-->
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
