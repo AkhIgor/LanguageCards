@@ -12,6 +12,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.igor.langugecards.R;
+import com.igor.langugecards.database.room.AppDatabase;
+import com.igor.langugecards.database.room.DAO.CardInteractor;
 import com.igor.langugecards.databinding.CreatingCardDataBinding;
 import com.igor.langugecards.model.ToolbarConfiguration;
 import com.igor.langugecards.model.TranslateSettings;
@@ -25,6 +27,7 @@ public class CreatingCardFragment extends ApplicationFragment {
     private CreatingCardViewModel mViewModel;
     private TranslateSettings mTanslateSettings;
     private EditText mNativeWordEditText;
+    private CardInteractor mCardInteractor;
 
     public static CreatingCardFragment newInstance() {
         return new CreatingCardFragment();
@@ -36,15 +39,18 @@ public class CreatingCardFragment extends ApplicationFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
-                () -> new CreatingCardViewModel(getActivity(),
-                        new TranslateInteractor())))
-                .get(CreatingCardViewModel.class);
-
         CreatingCardDataBinding binding = DataBindingUtil.inflate(inflater,
                 getLayoutRes(),
                 container,
                 false);
+
+        readArguments();
+
+        mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
+                () -> new CreatingCardViewModel(getActivity(),
+                        new TranslateInteractor(),
+                        mCardInteractor)))
+                .get(CreatingCardViewModel.class);
 
         binding.setVariable(com.igor.langugecards.BR.viewModel, mViewModel);
         binding.setLifecycleOwner(getViewLifecycleOwner());
@@ -89,7 +95,9 @@ public class CreatingCardFragment extends ApplicationFragment {
 
     @Override
     protected void readArguments() {
-
+        mCardInteractor = AppDatabase
+                .getInstance(requireActivity())
+                .getCardInteractor();
     }
 
     private void showSettings(TranslateSettings settings) {

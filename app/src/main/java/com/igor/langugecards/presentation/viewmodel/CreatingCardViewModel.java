@@ -2,6 +2,7 @@ package com.igor.langugecards.presentation.viewmodel;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -9,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
+import com.igor.langugecards.database.room.DAO.CardInteractor;
 import com.igor.langugecards.model.Card;
 import com.igor.langugecards.model.TranslateSettings;
 import com.igor.langugecards.network.interactor.TranslateInteractor;
@@ -16,6 +18,8 @@ import com.igor.langugecards.network.model.Translate;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -28,6 +32,7 @@ public class CreatingCardViewModel extends ViewModel {
     private final Context mContext;
     private final TranslateInteractor mTranslateInteractor;
     private final CompositeDisposable mDisposable;
+    private final CardInteractor mCardInteractor;
 
     private String mTheme;
     private MutableLiveData<String> mNativeWord = new MutableLiveData<>();
@@ -47,16 +52,19 @@ public class CreatingCardViewModel extends ViewModel {
     private String mToLanguageCode;
 
     public CreatingCardViewModel(@NonNull Context context,
-                                 @NonNull TranslateInteractor translateInteractor) {
+                                 @NonNull TranslateInteractor translateInteractor,
+                                 @NonNull CardInteractor cardInteractor) {
         mContext = context;
         mTranslateInteractor = translateInteractor;
         mDisposable = new CompositeDisposable();
+        mCardInteractor = cardInteractor;
 
         mDisposable.add(mUserInputSubject
                 .debounce(250, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(this::translate)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::translate)
         );
     }
 
@@ -97,19 +105,13 @@ public class CreatingCardViewModel extends ViewModel {
     }
 
     public void saveCard() {
-        if (mFromLanguage.getValue() != null &&
-                !mFromLanguage.getValue().isEmpty() &&
-                mToLanguage.getValue() != null &&
-                mNativeWord.getValue() != null &&
-                mTranslate.getValue() != null) {
-
-            Card card = new Card(mFromLanguage.getValue(),
-                    mToLanguage.getValue(),
-                    mTheme,
-                    mNativeWord.getValue(),
-                    mTranscription.getValue(),
-                    mTranslate.getValue());
-        }
+        mDisposable.add(
+                createCard()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(unused -> mProgress.postValue(true))
+                        .subscribe(this::addToDatabase,
+                                this::handleError));
     }
 
     public void onTranslatedWordChanged(@NonNull CharSequence text) {
@@ -153,5 +155,30 @@ public class CreatingCardViewModel extends ViewModel {
 
     private void handleError(@NonNull Throwable throwable) {
         Log.d("Request translate error", throwable.getMessage());
+    }
+
+    private Observable<Card> createCard() {
+        Observable<Card> cardObservable = Observable.just(new Card(
+                mFromLanguage.getValue(),
+                mToLanguage.getValue(),
+                mTheme,
+                mNativeWord.getValue(),
+                mTranscription.getValue(),
+                mTranslate.getValue()));
+
+        return cardObservable;
+    }
+
+    private void addToDatabase(@NonNull Card card) {
+        mDisposable.add(
+                Completable.fromAction(() -> mCardInteractor.addCard(card))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doAfterTerminate(() -> mProgress.setValue(false))
+                        .subscribe(this::showMessage));
+    }
+
+    private void showMessage() {
+        Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
     }
 }
