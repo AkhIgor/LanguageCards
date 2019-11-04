@@ -47,7 +47,7 @@ public class CreatingCardFragment extends ApplicationFragment {
         readArguments();
 
         mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
-                () -> new CreatingCardViewModel(getActivity(),
+                () -> new CreatingCardViewModel(this.requireActivity().getApplication(),
                         new TranslateInteractor(),
                         mCardInteractor)))
                 .get(CreatingCardViewModel.class);

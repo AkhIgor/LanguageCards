@@ -27,6 +27,7 @@ public abstract class ApplicationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        readArguments();
         return inflater.inflate(getLayoutRes(), container, false);
     }
 

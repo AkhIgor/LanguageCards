@@ -1,13 +1,13 @@
 package com.igor.langugecards.presentation.viewmodel;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.database.room.DAO.CardInteractor;
@@ -25,11 +25,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 
-public class CreatingCardViewModel extends ViewModel {
+public class CreatingCardViewModel extends AndroidViewModel {
 
     private static final String EMPTY_STRING = "";
 
-    private final Context mContext;
+    private final Application mApplication;
     private final TranslateInteractor mTranslateInteractor;
     private final CompositeDisposable mDisposable;
     private final CardInteractor mCardInteractor;
@@ -51,10 +51,11 @@ public class CreatingCardViewModel extends ViewModel {
     private String mFromLanguageCode;
     private String mToLanguageCode;
 
-    public CreatingCardViewModel(@NonNull Context context,
+    public CreatingCardViewModel(@NonNull Application application,
                                  @NonNull TranslateInteractor translateInteractor,
                                  @NonNull CardInteractor cardInteractor) {
-        mContext = context;
+        super(application);
+        mApplication = application;
         mTranslateInteractor = translateInteractor;
         mDisposable = new CompositeDisposable();
         mCardInteractor = cardInteractor;
@@ -138,7 +139,7 @@ public class CreatingCardViewModel extends ViewModel {
     }
 
     private void readTranslateSettings() {
-        TranslateSettings translateSettings = TranslateSettingInteractor.readTranslateSettings(mContext);
+        TranslateSettings translateSettings = TranslateSettingInteractor.readTranslateSettings(mApplication.getApplicationContext());
         if (translateSettings.getLanguageCodeFrom() == null ||
                 translateSettings.getLanguageCodeFrom().isEmpty()) {
             translateSettings.setLanguageFrom(translateSettings.getAutoDetectingLanguage());
@@ -179,6 +180,6 @@ public class CreatingCardViewModel extends ViewModel {
     }
 
     private void showMessage() {
-        Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mApplication, "Success", Toast.LENGTH_SHORT).show();
     }
 }

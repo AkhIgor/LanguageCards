@@ -3,6 +3,7 @@ package com.igor.langugecards.presentation.router;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.igor.langugecards.presentation.view.fragment.CardListFragment;
 import com.igor.langugecards.presentation.view.fragment.CreatingCardFragment;
 import com.igor.langugecards.presentation.view.fragment.MainMenuFragment;
 
@@ -34,7 +35,10 @@ public class ApplicationRouterImpl implements ApplicationRouter {
 
     @Override
     public void showAllCards() {
-
+        final FragmentContainer container = getContainer();
+        if (container != null) {
+            container.showFragment(new CardListFragment(), false);
+        }
     }
 
     @Override
