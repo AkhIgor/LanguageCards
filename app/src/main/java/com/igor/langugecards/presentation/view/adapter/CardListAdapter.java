@@ -46,22 +46,21 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardVi
     static final class CardViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView mThemeTextView;
-        private final TextView mWordTextView;
-
-        private String mNativeWord;
-        private String mTranslatedWord;
+        private final TextView mNativeWordTextView;
+        private final TextView mTranslatedWordTextView;
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mThemeTextView = itemView.findViewById(R.id.card_item_theme);
-            mWordTextView = itemView.findViewById(R.id.card_item_word);
+            mNativeWordTextView = itemView.findViewById(R.id.card_item_native_word);
+            mTranslatedWordTextView = itemView.findViewById(R.id.card_item_translated_word);
         }
 
         private void setWords(@NonNull String nativeWord,
                               @NonNull String translatedWord) {
-            mNativeWord = nativeWord;
-            mTranslatedWord = translatedWord;
+            mNativeWordTextView.setText(nativeWord);
+            mTranslatedWordTextView.setText(translatedWord);
         }
     }
 }

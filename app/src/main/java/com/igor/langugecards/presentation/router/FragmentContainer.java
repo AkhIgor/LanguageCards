@@ -22,6 +22,8 @@ public interface FragmentContainer {
      */
     void showFragment(@NonNull Fragment fragment, boolean addToBackStack);
 
+    void showHomeFragment();
+
     /**
      * Стартануть активити
      *

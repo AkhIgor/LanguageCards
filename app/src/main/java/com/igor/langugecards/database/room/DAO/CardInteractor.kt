@@ -14,7 +14,7 @@ interface CardInteractor {
     fun deleteCard(card: Card)
 
     @Query(value = "SELECT * FROM Card")
-    fun getAllCards(): Observable<List<Card>>
+    fun getAllCards(): Observable<MutableList<Card>>
 
     @Query(value = "SELECT * FROM Card WHERE mTheme == :theme")
     fun getCardsByTheme(theme: String): Observable<List<Card>>

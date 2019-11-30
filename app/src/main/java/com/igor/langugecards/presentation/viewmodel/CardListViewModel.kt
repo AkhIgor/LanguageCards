@@ -12,24 +12,29 @@ class CardListViewModel(
 
     val mProgressEvent = MutableLiveData<Boolean>()
     val mCards = MutableLiveData<List<Card>>()
-    val mDisposable = CompositeDisposable()
+    private val mDisposable = CompositeDisposable()
 
-    public fun onScreenStart() {
+    fun onScreenStart() {
         loadCards()
     }
 
     private fun loadCards() {
         mDisposable.add(mCardInteractor.getAllCards()
                 .doOnSubscribe { mProgressEvent.postValue(true) }
-                .doAfterTerminate { mProgressEvent.postValue(false) }
+//                .doAfterTerminate { mProgressEvent.postValue(false) }
                 .subscribe(
-                        { cards -> mCards.postValue(cards) },
-                        { error -> handleError(error) }
+                        { cards ->
+                            mCards.postValue(cards)
+                            mProgressEvent.postValue(false)
+                        },
+                        { error ->
+                            handleError(error)
+                        }
                 )
         )
     }
 
     private fun handleError(@NonNull throwable: Throwable) {
-//TODO something
+        mProgressEvent.postValue(false)
     }
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data class="LearningCardsDataBinding">
+
+        <import type="com.igor.langugecards.model.Card" />
+
+        <variable
+            name="viewModel"
+            type="com.igor.langugecards.presentation.viewmodel.LearningCardsViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/margin_small_giant"
+            android:layout_marginTop="@dimen/margin_giant"
+            android:layout_marginEnd="@dimen/margin_small_giant"
+            android:layout_marginBottom="@dimen/margin_giant">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/card_theme_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:gravity="center"
+                    android:text="@{viewModel.card.theme}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/card_language_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:gravity="center"
+                    android:text="@{!viewModel.flipped ? viewModel.card.fromLanguage : viewModel.card.toLanguage}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_theme_text_view" />
+
+                <TextView
+                    android:id="@+id/word_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_giant_xxx"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:gravity="center"
+                    android:text="@{!viewModel.flipped ? viewModel.card.nativeWord : viewModel.card.translatedWord}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_language_text_view" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+</layout>

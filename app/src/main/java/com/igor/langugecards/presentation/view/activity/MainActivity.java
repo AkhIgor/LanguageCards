@@ -22,10 +22,11 @@ import com.igor.langugecards.presentation.view.fragment.MainMenuFragment;
 import com.igor.langugecards.presentation.view.fragment.SetTranslateLanguagesFragment;
 
 import static com.igor.langugecards.model.ToolbarConfiguration.HOME_BUTTON_RES;
-import com.igor.langugecards.presentation.view.fragment.SetTranslateLanguagesFragment;
 
 public class MainActivity extends AppCompatActivity
         implements FragmentContainer {
+
+    private static final String FRAGMENT_TAG = "HOME TAG";
 
     private ApplicationRouter mRouter;
     private Class mActiveFragmentClass;
@@ -40,16 +41,12 @@ public class MainActivity extends AppCompatActivity
         mToolbar = findViewById(R.id.toolbar_actionbar);
     }
 
-    private void showMenu() {
-        showFragment(MainMenuFragment.getInstance(), true);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
 
         setupViews();
-        showMenu();
+        showHomeFragment();
     }
 
     @Override
@@ -61,8 +58,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.translate_settings : {
-                showFragment(SetTranslateLanguagesFragment.getInstance(), true);
+            case R.id.translate_settings: {
+                showSettings();
                 break;
             }
         }
@@ -70,13 +67,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setToolbar(@Nullable ToolbarConfiguration configuration, boolean showHomeButton) {
-        if(configuration == null) {
+        if (configuration == null) {
             configuration = ToolbarConfiguration.getDefaultToolbarConfiguration();
         }
-        if(configuration.getTitle() == null) {
+        if (configuration.getTitle() == null) {
             configuration.setTitle(getString(R.string.app_name));
         }
-        if(showHomeButton) {
+        if (showHomeButton) {
             mToolbar.setNavigationIcon(HOME_BUTTON_RES);
         } else {
             mToolbar.setNavigationIcon(null);
@@ -94,14 +91,32 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showFragment(@NonNull Fragment fragment, boolean addToBackStack) {
         FragmentManager fm = getSupportFragmentManager();
-        if (fm != null) {
-            FragmentTransaction fragmentTransaction = fm.beginTransaction().replace(R.id.fragment_container, fragment);
-            if (addToBackStack) {
-                fragmentTransaction.addToBackStack(null);
-            }
-            fragmentTransaction.commit();
-            mActiveFragmentClass = fragment.getClass();
+        FragmentTransaction fragmentTransaction = fm
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
         }
+        fragmentTransaction.commit();
+        mActiveFragmentClass = fragment.getClass();
+    }
+
+    @Override
+    public void showHomeFragment() {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment homeFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);
+
+        if (homeFragment == null) {
+            homeFragment = MainMenuFragment.getInstance();
+        }
+
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, homeFragment, FRAGMENT_TAG)
+                .commit();
+
+
+        mActiveFragmentClass = MainMenuFragment.class;
     }
 
     @Override
@@ -116,5 +131,22 @@ public class MainActivity extends AppCompatActivity
     private void setupViews() {
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(v -> getRouter().goHome());
+    }
+
+    private void showSettings() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction()
+                .add(R.id.fragment_container,SetTranslateLanguagesFragment.getInstance());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        mActiveFragmentClass = SetTranslateLanguagesFragment.class;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        FragmentManager fm = getSupportFragmentManager();
+        fm.getFragments();
     }
 }

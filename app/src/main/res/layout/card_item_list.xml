@@ -8,37 +8,70 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_little"
+        android:backgroundTint="@color/colorPrimaryBright"
         android:layout_marginBottom="@dimen/margin_little"
-        app:cardBackgroundColor="@color/colorPrimaryDark"
-        app:cardCornerRadius="@dimen/margin_xmedium"
-        app:cardElevation="@dimen/margin_medium">
+        app:cardCornerRadius="@dimen/margin_xmedium">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/card_item_theme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_medium"
                 android:layout_marginTop="@dimen/margin_medium"
+                android:layout_marginEnd="@dimen/margin_medium"
                 android:textAllCaps="true"
                 android:textSize="@dimen/text_size_xbig"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tool:text="Автомобили" />
 
             <TextView
-                android:id="@+id/card_item_word"
-                android:layout_width="wrap_content"
+                android:id="@+id/card_item_native_word"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_medium"
                 android:layout_marginTop="@dimen/margin_small_giant"
-                android:layout_marginBottom="@dimen/margin_small_giant"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:layout_marginBottom="@dimen/margin_medium"
+                android:gravity="center"
                 android:textSize="@dimen/text_size_xmedium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/middle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_item_theme"
                 tool:text="Машина" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/card_item_translated_word"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_small_giant"
+                android:layout_marginEnd="@dimen/margin_xmedium"
+                android:layout_marginBottom="@dimen/margin_medium"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_xmedium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/middle"
+                app:layout_constraintTop_toBottomOf="@id/card_item_theme"
+                tool:text="Car" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/middle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
 </FrameLayout>

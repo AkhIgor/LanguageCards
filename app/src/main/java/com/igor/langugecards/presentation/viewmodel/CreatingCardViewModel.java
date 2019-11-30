@@ -134,7 +134,10 @@ public class CreatingCardViewModel extends AndroidViewModel {
                         mToLanguageCode)
                         .doOnSubscribe(unused -> mProgress.postValue(true))
                         .doAfterTerminate(() -> mProgress.postValue(false))
-                        .subscribe(this::setTranslate,
+                        .subscribe(translate -> {
+                                    setTranslate(translate);
+                                    mNativeWord.postValue(translatedWord);
+                                },
                                 this::handleError));
     }
 

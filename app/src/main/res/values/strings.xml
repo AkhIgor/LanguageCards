@@ -2,6 +2,7 @@
     <string name="app_name">My Application</string>
 
     <string name="create_card">Создать новую карточку</string>
+    <string name="show_cards">Открыть карточки</string>
     <string name="theme">Тема</string>
     <string name="enter_word">Введите слово</string>
     <string name="add_card">Добавить карточку</string>

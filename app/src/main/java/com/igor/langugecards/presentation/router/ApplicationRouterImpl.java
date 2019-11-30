@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 
 import com.igor.langugecards.presentation.view.fragment.CardListFragment;
 import com.igor.langugecards.presentation.view.fragment.CreatingCardFragment;
-import com.igor.langugecards.presentation.view.fragment.MainMenuFragment;
 
 import java.lang.ref.WeakReference;
 
@@ -21,7 +20,7 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     public void goHome() {
         final FragmentContainer container = getContainer();
         if (container != null) {
-            container.showFragment(MainMenuFragment.getInstance(), false);
+            container.showHomeFragment();
         }
     }
 
