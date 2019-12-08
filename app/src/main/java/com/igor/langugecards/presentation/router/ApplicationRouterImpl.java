@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.igor.langugecards.presentation.view.fragment.CardListFragment;
 import com.igor.langugecards.presentation.view.fragment.CreatingCardFragment;
+import com.igor.langugecards.presentation.view.fragment.LearningCardsFragment;
 
 import java.lang.ref.WeakReference;
 
@@ -36,13 +37,16 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     public void showAllCards() {
         final FragmentContainer container = getContainer();
         if (container != null) {
-            container.showFragment(new CardListFragment(), false);
+            container.showFragment(CardListFragment.CardListFragmentFactory.newInstance(), false);
         }
     }
 
     @Override
     public void testing() {
-
+        final FragmentContainer container = getContainer();
+        if (container != null) {
+            container.showFragment(LearningCardsFragment.LearningCardsFragmentFactory.newInstance(), false);
+        }
     }
 
     @Nullable

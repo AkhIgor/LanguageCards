@@ -20,7 +20,6 @@ class LearningCardsViewModel(
     val flipped: LiveData<Boolean> = MutableLiveData<Boolean>()
     val progress = MutableLiveData<Boolean>()
 
-
     private fun readCardsFromDb() {
         disposable.add(
                 cardInteractor.getAllCards()

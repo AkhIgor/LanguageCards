@@ -109,6 +109,7 @@ public class Card {
 
     @Override
     public int hashCode() {
-        return Objects.hash(mId, mToLanguage, mFromLanguage, mTheme, mNativeWord, mTranscription, mTranslatedWord);
+        return Objects.hash(mId, mToLanguage, mFromLanguage,
+                mTheme, mNativeWord, mTranscription, mTranslatedWord);
     }
 }

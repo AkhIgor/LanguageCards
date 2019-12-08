@@ -1,5 +1,6 @@
 package com.igor.langugecards.presentation.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
@@ -162,15 +163,13 @@ public class CreatingCardViewModel extends AndroidViewModel {
     }
 
     private Observable<Card> createCard() {
-        Observable<Card> cardObservable = Observable.just(new Card(
+        return Observable.just(new Card(
                 mFromLanguage.getValue(),
                 mToLanguage.getValue(),
                 mTheme,
                 mNativeWord.getValue(),
                 mTranscription.getValue(),
                 mTranslate.getValue()));
-
-        return cardObservable;
     }
 
     private void addToDatabase(@NonNull Card card) {

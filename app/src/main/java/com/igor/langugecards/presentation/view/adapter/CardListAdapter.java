@@ -33,7 +33,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardVi
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         Card card = mCards.get(position);
 
-        holder.mThemeTextView.setText(card.getTheme());
+        holder.setTheme(card.getTheme());
         holder.setWords(card.getNativeWord(),
                 card.getTranslatedWord());
     }
@@ -49,12 +49,16 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardVi
         private final TextView mNativeWordTextView;
         private final TextView mTranslatedWordTextView;
 
-        public CardViewHolder(@NonNull View itemView) {
+        private CardViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mThemeTextView = itemView.findViewById(R.id.card_item_theme);
             mNativeWordTextView = itemView.findViewById(R.id.card_item_native_word);
             mTranslatedWordTextView = itemView.findViewById(R.id.card_item_translated_word);
+        }
+
+        private void setTheme(@NonNull String theme) {
+            mThemeTextView.setText(theme);
         }
 
         private void setWords(@NonNull String nativeWord,

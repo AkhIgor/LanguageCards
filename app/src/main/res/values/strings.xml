@@ -13,4 +13,6 @@
     <string name="translate_into">Перевести на:</string>
     <string name="translate_settings">Настройки перевода</string>
     <string name="close">Закрыть</string>
+
+    <string name="not_defined">Ошибка! Значение не определенно</string>
 </resources>

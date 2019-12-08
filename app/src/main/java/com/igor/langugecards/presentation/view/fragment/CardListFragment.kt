@@ -34,6 +34,12 @@ class CardListFragment : ApplicationFragment() {
                 .get(CardListViewModel::class.java)
     }
 
+    companion object CardListFragmentFactory {
+        fun newInstance(): CardListFragment {
+            return CardListFragment()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<FragmentCardListDataBinding>(inflater,
                 layoutRes,
@@ -43,8 +49,8 @@ class CardListFragment : ApplicationFragment() {
         readArguments()
 
         binding.setVariable(com.igor.langugecards.BR.viewModel, mViewModel)
-        binding.setLifecycleOwner(viewLifecycleOwner)
-        return binding.getRoot()
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
 
     }
 
