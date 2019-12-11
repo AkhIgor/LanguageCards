@@ -1,4 +1,4 @@
-package com.igor.langugecards.presentation.view.customview.extensions
+package com.igor.langugecards.presentation.view.custom.extensions
 
 import android.content.Context
 

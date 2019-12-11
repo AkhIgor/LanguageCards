@@ -10,15 +10,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.igor.langugecards.R;
 import com.igor.langugecards.model.Card;
+import com.igor.langugecards.presentation.view.adapter.animation.ISwipeAdapter;
+import com.igor.langugecards.presentation.view.adapter.animation.ItemSwipeListener;
 
 import java.util.List;
 
-public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardViewHolder> {
+public class CardListAdapter
+        extends RecyclerView.Adapter<CardListAdapter.CardViewHolder>
+        implements ISwipeAdapter {
 
     private final List<Card> mCards;
+    private final ItemSwipeListener mSwipeListener;
 
-    public CardListAdapter(@NonNull List<Card> cards) {
+    public CardListAdapter(@NonNull ItemSwipeListener swipeListener, @NonNull List<Card> cards) {
         mCards = cards;
+        mSwipeListener = swipeListener;
     }
 
     @NonNull
@@ -41,6 +47,11 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardVi
     @Override
     public int getItemCount() {
         return mCards.size();
+    }
+
+    @Override
+    public void onItemSwipe(int itemPosition) {
+        mSwipeListener.onItemSwipe(itemPosition);
     }
 
     static final class CardViewHolder extends RecyclerView.ViewHolder {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -79,6 +80,7 @@ public class CreatingCardFragment extends ApplicationFragment {
     protected void setUpViews() {
         mViewModel.getTranslateSettings().observe(this, this::showSettings);
 //        mNativeWordEditText.addTextChangedListener(mViewModel); - работает точно так же, как и текущая реализация
+        mViewModel.getSaveCardEvent().observe(this, unused -> showMessage());
     }
 
     @Override
@@ -109,5 +111,9 @@ public class CreatingCardFragment extends ApplicationFragment {
         String languageInto = settings.getLanguageTo();
         configuration.setSubtitle(translateInto + " " + languageInto);
         ((MainActivity) getActivity()).setToolbar(configuration, true);
+    }
+
+    private void showMessage() {
+        Toast.makeText(requireActivity(), "Success", Toast.LENGTH_SHORT).show();
     }
 }

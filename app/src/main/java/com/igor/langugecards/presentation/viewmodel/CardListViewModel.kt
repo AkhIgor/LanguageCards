@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.model.Card
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 class CardListViewModel(
         private val mCardInteractor: CardInteractor) : ViewModel() {
@@ -18,10 +20,20 @@ class CardListViewModel(
         loadCards()
     }
 
+    fun removeCard(cardId: Long) {
+        mDisposable.add(
+                Completable.fromAction { mCardInteractor.deleteCardById(cardId) }
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                                { showMessage() },
+                                { handleError(it) }
+                        )
+        )
+    }
+
     private fun loadCards() {
         mDisposable.add(mCardInteractor.getAllCards()
                 .doOnSubscribe { mProgressEvent.postValue(true) }
-//                .doAfterTerminate { mProgressEvent.postValue(false) }
                 .subscribe(
                         { cards ->
                             mCards.postValue(cards)
@@ -32,6 +44,10 @@ class CardListViewModel(
                         }
                 )
         )
+    }
+
+    private fun showMessage() {
+
     }
 
     private fun handleError(@NonNull throwable: Throwable) {

@@ -1,9 +1,7 @@
 package com.igor.langugecards.presentation.viewmodel;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -48,6 +46,8 @@ public class CreatingCardViewModel extends AndroidViewModel {
     private BehaviorSubject<String> mUserInputSubject = BehaviorSubject.create();
 
     private MutableLiveData<TranslateSettings> mTranslateSettings = new MutableLiveData<>();
+
+    private SingleLiveEvent<Void> mSaveCardEvent = new SingleLiveEvent<>();
 
     private String mFromLanguageCode;
     private String mToLanguageCode;
@@ -104,6 +104,10 @@ public class CreatingCardViewModel extends AndroidViewModel {
 
     public LiveData<TranslateSettings> getTranslateSettings() {
         return mTranslateSettings;
+    }
+
+    public LiveData<Void> getSaveCardEvent() {
+        return mSaveCardEvent;
     }
 
     public void saveCard() {
@@ -178,10 +182,6 @@ public class CreatingCardViewModel extends AndroidViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doAfterTerminate(() -> mProgress.setValue(false))
-                        .subscribe(this::showMessage));
-    }
-
-    private void showMessage() {
-        Toast.makeText(mApplication, "Success", Toast.LENGTH_SHORT).show();
+                        .subscribe(() -> mSaveCardEvent.call()));
     }
 }

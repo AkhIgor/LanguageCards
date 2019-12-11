@@ -13,6 +13,9 @@ interface CardInteractor {
     @Delete
     fun deleteCard(card: Card)
 
+    @Query(value = "DELETE FROM Card WHERE mId == :cardId")
+    fun deleteCardById(cardId: Long)
+
     @Query(value = "SELECT * FROM Card")
     fun getAllCards(): Observable<MutableList<Card>>
 

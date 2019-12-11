@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.igor.langugecards.R
 import com.igor.langugecards.database.room.AppDatabase
@@ -16,13 +17,16 @@ import com.igor.langugecards.model.Card
 import com.igor.langugecards.model.ToolbarConfiguration
 import com.igor.langugecards.presentation.view.activity.MainActivity
 import com.igor.langugecards.presentation.view.adapter.CardListAdapter
+import com.igor.langugecards.presentation.view.adapter.animation.CustomItemTouchHelper
+import com.igor.langugecards.presentation.view.adapter.animation.ItemSwipeListener
 import com.igor.langugecards.presentation.viewmodel.CardListViewModel
 import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory
 
-class CardListFragment : ApplicationFragment() {
 
-    private val mCards = ArrayList<Card>()
-    private val mCardAdapter = CardListAdapter(mCards)
+class CardListFragment : ApplicationFragment(), ItemSwipeListener {
+
+    private val mCards: MutableList<Card> = ArrayList()
+    private val mCardAdapter = CardListAdapter(this, mCards)
 
     private lateinit var mCardInteractor: CardInteractor
     private lateinit var mRecyclerView: RecyclerView
@@ -66,6 +70,9 @@ class CardListFragment : ApplicationFragment() {
 
     override fun setUpViews() {
         mRecyclerView.adapter = mCardAdapter
+        val callback = CustomItemTouchHelper(mCardAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(mRecyclerView)
         mViewModel.mCards.observe(this, Observer { cards -> setUpCards(cards) })
 
     }
@@ -89,6 +96,12 @@ class CardListFragment : ApplicationFragment() {
 
     override fun getLayoutRes(): Int {
         return R.layout.fragment_card_list
+    }
+
+    override fun onItemSwipe(itemPosition: Int) {
+        mViewModel.removeCard(mCards[itemPosition].id)
+        mCards.removeAt(itemPosition)
+        mCardAdapter.notifyItemRemoved(itemPosition)
     }
 
     private fun setUpCards(cards: List<Card>) {
