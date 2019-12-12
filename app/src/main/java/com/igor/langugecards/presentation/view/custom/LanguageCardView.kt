@@ -1,6 +1,6 @@
 package com.igor.langugecards.presentation.view.custom
 
-import android.animation.ObjectAnimator
+import android.animation.Animator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -40,9 +40,8 @@ class LanguageCardView @JvmOverloads constructor(
         private const val THEME_LANGUAGE_MARGIN_TOP = 48
         private const val THEME_WORD_MARGIN_TOP = 120
 
-        private const val INIT_ROTATION_VALUE = 0f
-        private const val ROTATION_DEGREE = 180f
-        private const val MAX_ROTATION_VALUE = 1080f
+        private const val NORMAL_ROTATION_DEGREE = 0f
+        private const val FLIPPED_ROTATION_DEGREE = 180F
     }
 
     @ColorRes
@@ -53,6 +52,9 @@ class LanguageCardView @JvmOverloads constructor(
     private var cardThemeTextSize: Float = DEFAULT_THEME_TEXT_SIZE.toFloat()
     private var cardLanguageTextSize = DEFAULT_LANGUAGE_TEXT_SIZE.toFloat()
     private var cardWordTextSize = DEFAULT_WORD_TEXT_SIZE.toFloat()
+
+    private var requiredTopPosition = 0f
+    private var requiredBottomPosition = 0f
 
     private val paintBrush = Paint(Paint.ANTI_ALIAS_FLAG)
     private val viewRect = Rect()
@@ -67,11 +69,11 @@ class LanguageCardView @JvmOverloads constructor(
 
     private var wordCursorY: Float = 0f
 
-    private var currRotationDegree: Float = 0f
+    private var mDetector: GestureDetectorCompat
 
-    private lateinit var mDetector: GestureDetectorCompat
+    private val flipAnimator = animate()
 
-    private val animator = ObjectAnimator()
+    private val scrollAnimator = animate()
 
     init {
         if (attrs != null) {
@@ -99,9 +101,13 @@ class LanguageCardView @JvmOverloads constructor(
 
             typedArray.recycle()
 
-            animator.setProperty(ROTATION_Y)
-            animator.target = this
-            animator.duration = 500
+            flipAnimator
+                    .setDuration(500)
+                    .interpolator = FastOutSlowInInterpolator()
+
+            scrollAnimator
+                    .setDuration(700)
+                    .interpolator = FastOutSlowInInterpolator()
         }
 
         mDetector = GestureDetectorCompat(context, this)
@@ -140,6 +146,13 @@ class LanguageCardView @JvmOverloads constructor(
         }
     }
 
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        requiredTopPosition = top.toFloat()
+        requiredBottomPosition = bottom.toFloat()
+    }
+
     private fun resolveDefaultSize(spec: Int): Int {
         return when (MeasureSpec.getMode(spec)) {
             MeasureSpec.UNSPECIFIED -> {
@@ -153,6 +166,13 @@ class LanguageCardView @JvmOverloads constructor(
             }
             else -> MeasureSpec.getSize(spec)
         }
+    }
+
+    override fun draw(canvas: Canvas?) {
+        super.draw(canvas)
+
+        Log.d("CardViewPosition", "draw $top")
+        Log.d("CardViewPosition", "draw $y")
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -172,6 +192,9 @@ class LanguageCardView @JvmOverloads constructor(
         setup(Color.BLACK, Paint.Style.FILL)
         paintBrush.textSize = cardWordTextSize
         canvas.drawText(cardWord, centerX, wordCursorY, paintBrush)
+
+        Log.d("CardViewPosition", "$top")
+        Log.d("CardViewPosition", "$y")
     }
 
     private fun setup(newColor: Int, newStyle: Paint.Style) {
@@ -182,37 +205,33 @@ class LanguageCardView @JvmOverloads constructor(
     }
 
     override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-        val direction = Gesture.getDirection(distanceX, distanceY)
-
         Log.d("CardView", "onScroll")
 
-        if (kotlin.math.abs(currRotationDegree) == MAX_ROTATION_VALUE) {
-            currRotationDegree = INIT_ROTATION_VALUE
-        }
+        val direction = Gesture.getDirection(distanceX, distanceY)
 
-        animator.interpolator = FastOutSlowInInterpolator()
         return when (direction) {
             Gesture.Direction.LEFT -> {
-                val purposeRotationDegree = currRotationDegree + ROTATION_DEGREE
-                animator.setFloatValues(currRotationDegree, purposeRotationDegree)
-                currRotationDegree = purposeRotationDegree
-                animator.start()
+                flipAnimator.rotationYBy(180f)
+                        .setListener()
+                flipAnimator.start()
                 true
             }
             Gesture.Direction.RIGHT -> {
-                val purposeRotationDegree = currRotationDegree - ROTATION_DEGREE
-                animator.setFloatValues(currRotationDegree, purposeRotationDegree)
-                currRotationDegree = purposeRotationDegree
-                animator.start()
+                flipAnimator.rotationYBy(-180f)
+                flipAnimator.start()
                 true
             }
             Gesture.Direction.UP -> {
-                false
+                scrollAnimator.yBy(-(y + height.toFloat()))
+                scrollAnimator.start()
+                true
             }
             Gesture.Direction.DOWN -> {
-                false
+                scrollAnimator.yBy(y + height.toFloat())
+                scrollAnimator.start()
+                true
             }
-            else -> true
+            else -> false
         }
     }
 
@@ -223,7 +242,7 @@ class LanguageCardView @JvmOverloads constructor(
     override fun onSingleTapUp(e: MotionEvent?): Boolean {
         Log.d("CardView", "onSingleTapUp")
 
-        return true
+        return false
     }
 
     override fun onDown(e: MotionEvent?): Boolean {
@@ -235,7 +254,7 @@ class LanguageCardView @JvmOverloads constructor(
     override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
         Log.d("CardView", "onFling")
 
-        return true
+        return false
     }
 
     override fun onLongPress(e: MotionEvent?) {

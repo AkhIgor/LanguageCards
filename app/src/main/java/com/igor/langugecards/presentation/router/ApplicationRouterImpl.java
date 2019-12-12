@@ -45,7 +45,7 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     public void testing() {
         final FragmentContainer container = getContainer();
         if (container != null) {
-            container.showFragment(LearningCardsFragment.LearningCardsFragmentFactory.newInstance(), false);
+            container.showFragment(LearningCardsFragment.LearningCardsFragmentFactory.newInstance(), true);
         }
     }
 
