@@ -8,23 +8,22 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
-import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.annotation.ColorRes
 import androidx.cardview.widget.CardView
-import androidx.core.view.GestureDetectorCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.igor.langugecards.R
-import com.igor.langugecards.presentation.gestures.Gesture
+import com.igor.langugecards.presentation.gestures.GestureListener
 import com.igor.langugecards.presentation.view.custom.extensions.dpToPx
 import com.igor.langugecards.presentation.view.custom.extensions.spToPx
+import com.igor.langugecards.presentation.view.custom.observer.LanguageCardViewListener
 
 
 class LanguageCardView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : CardView(context, attrs, defStyleAttr), GestureDetector.OnGestureListener {
+) : CardView(context, attrs, defStyleAttr), Animator.AnimatorListener {
 
     companion object {
         private const val DEFAULT_LOAD_TINT_COLOR = R.color.colorShimmer
@@ -40,8 +39,12 @@ class LanguageCardView @JvmOverloads constructor(
         private const val THEME_LANGUAGE_MARGIN_TOP = 48
         private const val THEME_WORD_MARGIN_TOP = 120
 
-        private const val NORMAL_ROTATION_DEGREE = 0f
-        private const val FLIPPED_ROTATION_DEGREE = 180F
+        private const val FLIPPING_ANIMATION_DURATION: Long = 500
+        private const val SCROLLING_ANIMATION_DURATION: Long = 700
+        private const val APPEARANCE_ANIMATION_DURATION: Long = 300
+
+        private const val SWIPE_TO_RIGHT_DEGREE = -180f
+        private const val SWIPE_TO_LEFT_DEGREE = 180f
     }
 
     @ColorRes
@@ -69,11 +72,19 @@ class LanguageCardView @JvmOverloads constructor(
 
     private var wordCursorY: Float = 0f
 
-    private var mDetector: GestureDetectorCompat
+    private var flipped: Boolean = false
 
     private val flipAnimator = animate()
 
     private val scrollAnimator = animate()
+
+    private val appearanceAnimator = animate()
+
+    private var animationIsRunning: Boolean = false
+
+    private var scrollAnimation: Boolean = false
+
+    private lateinit var gestureListener: GestureListener
 
     init {
         if (attrs != null) {
@@ -102,21 +113,25 @@ class LanguageCardView @JvmOverloads constructor(
             typedArray.recycle()
 
             flipAnimator
-                    .setDuration(500)
+                    .setDuration(FLIPPING_ANIMATION_DURATION)
+                    .setListener(this)
                     .interpolator = FastOutSlowInInterpolator()
 
             scrollAnimator
-                    .setDuration(700)
+                    .setDuration(SCROLLING_ANIMATION_DURATION)
+                    .setListener(this)
                     .interpolator = FastOutSlowInInterpolator()
-        }
 
-        mDetector = GestureDetectorCompat(context, this)
+            appearanceAnimator
+                    .setDuration(APPEARANCE_ANIMATION_DURATION)
+                    .interpolator = FastOutSlowInInterpolator()
+
+            gestureListener = GestureListener(context, this)
+        }
 
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-
         val initialWidth = resolveDefaultSize(widthMeasureSpec)
         val initialHeight = resolveDefaultSize(heightMeasureSpec)
         setMeasuredDimension(initialWidth, initialHeight)
@@ -153,21 +168,6 @@ class LanguageCardView @JvmOverloads constructor(
         requiredBottomPosition = bottom.toFloat()
     }
 
-    private fun resolveDefaultSize(spec: Int): Int {
-        return when (MeasureSpec.getMode(spec)) {
-            MeasureSpec.UNSPECIFIED -> {
-                context.dpToPx(DEFAULT_SIZE).toInt()
-            }
-            MeasureSpec.AT_MOST -> {
-                MeasureSpec.getSize(spec)
-            }
-            MeasureSpec.EXACTLY -> {
-                MeasureSpec.getSize(spec)
-            }
-            else -> MeasureSpec.getSize(spec)
-        }
-    }
-
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
 
@@ -197,37 +197,48 @@ class LanguageCardView @JvmOverloads constructor(
         Log.d("CardViewPosition", "$y")
     }
 
-    private fun setup(newColor: Int, newStyle: Paint.Style) {
-        with(paintBrush) {
-            color = newColor
-            style = newStyle
-        }
+    /**
+     * Установить слушателя событий, для уведомления о изменений состояния View
+     *
+     * @param listener слушатель событий
+     */
+    fun setScrollListener(listener: LanguageCardViewListener) {
+
     }
 
-    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+    fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
         Log.d("CardView", "onScroll")
 
-        val direction = Gesture.getDirection(distanceX, distanceY)
+        if (animationIsRunning) {
+            return false
+        }
+
+        val direction = gestureListener.getSwipeDirection(e1, e2, flipped)
+
+        Log.d("Direction", "Direction: $direction")
 
         return when (direction) {
-            Gesture.Direction.LEFT -> {
-                flipAnimator.rotationYBy(180f)
-                        .setListener()
+            GestureListener.Direction.LEFT -> {
+                flipAnimator.rotationYBy(SWIPE_TO_LEFT_DEGREE)
+                flipped = !flipped
                 flipAnimator.start()
                 true
             }
-            Gesture.Direction.RIGHT -> {
-                flipAnimator.rotationYBy(-180f)
+            GestureListener.Direction.RIGHT -> {
+                flipAnimator.rotationYBy(SWIPE_TO_RIGHT_DEGREE)
+                flipped = !flipped
                 flipAnimator.start()
                 true
             }
-            Gesture.Direction.UP -> {
-                scrollAnimator.yBy(-(y + height.toFloat()))
+            GestureListener.Direction.UP -> {
+                scrollAnimator.yBy(-requiredBottomPosition)
+                scrollAnimation = true
                 scrollAnimator.start()
                 true
             }
-            Gesture.Direction.DOWN -> {
-                scrollAnimator.yBy(y + height.toFloat())
+            GestureListener.Direction.DOWN -> {
+                scrollAnimator.yBy(requiredBottomPosition)
+                scrollAnimation = true
                 scrollAnimator.start()
                 true
             }
@@ -235,37 +246,57 @@ class LanguageCardView @JvmOverloads constructor(
         }
     }
 
-    override fun onShowPress(e: MotionEvent?) {
-        Log.d("CardView", "onShowPress")
-    }
-
-    override fun onSingleTapUp(e: MotionEvent?): Boolean {
-        Log.d("CardView", "onSingleTapUp")
-
-        return false
-    }
-
-    override fun onDown(e: MotionEvent?): Boolean {
-        Log.d("CardView", "onDown")
-
-        return true
-    }
-
-    override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-        Log.d("CardView", "onFling")
-
-        return false
-    }
-
-    override fun onLongPress(e: MotionEvent?) {
-        Log.d("CardView", "onLongPress")
-    }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return if (mDetector.onTouchEvent(event)) {
+        return if (gestureListener.onTouchEvent(event)) {
             true
         } else {
             super.onTouchEvent(event)
+        }
+    }
+
+    override fun onAnimationRepeat(animation: Animator?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onAnimationEnd(animation: Animator?) {
+        animationIsRunning = false
+        if (scrollAnimation) {
+            alpha = 0f
+            y = requiredTopPosition      //300
+            appearanceAnimator.alpha(1f)
+            appearanceAnimator.start()
+            scrollAnimation = false
+        }
+    }
+
+    override fun onAnimationCancel(animation: Animator?) {
+        animationIsRunning = false
+        scrollAnimation = false
+    }
+
+    override fun onAnimationStart(animation: Animator?) {
+        animationIsRunning = true
+    }
+
+    private fun resolveDefaultSize(spec: Int): Int {
+        return when (MeasureSpec.getMode(spec)) {
+            MeasureSpec.UNSPECIFIED -> {
+                context.dpToPx(DEFAULT_SIZE).toInt()
+            }
+            MeasureSpec.AT_MOST -> {
+                MeasureSpec.getSize(spec)
+            }
+            MeasureSpec.EXACTLY -> {
+                MeasureSpec.getSize(spec)
+            }
+            else -> MeasureSpec.getSize(spec)
+        }
+    }
+
+    private fun setup(newColor: Int, newStyle: Paint.Style) {
+        with(paintBrush) {
+            color = newColor
+            style = newStyle
         }
     }
 }
