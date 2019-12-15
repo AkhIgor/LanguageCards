@@ -20,9 +20,9 @@ class CardListViewModel(
         loadCards()
     }
 
-    fun removeCard(cardId: Long) {
+    fun removeCard(card: Card) {
         mDisposable.add(
-                Completable.fromAction { mCardInteractor.deleteCardById(cardId) }
+                Completable.fromAction { mCardInteractor.deleteCard(card) }
                         .subscribeOn(Schedulers.io())
                         .subscribe(
                                 { showMessage() },
@@ -38,9 +38,11 @@ class CardListViewModel(
                         { cards ->
                             mCards.postValue(cards)
                             mProgressEvent.postValue(false)
+                            mDisposable.clear()
                         },
                         { error ->
                             handleError(error)
+                            mDisposable.clear()
                         }
                 )
         )

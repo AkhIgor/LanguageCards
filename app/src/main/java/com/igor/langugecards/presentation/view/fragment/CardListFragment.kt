@@ -25,15 +25,15 @@ import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory
 
 class CardListFragment : ApplicationFragment(), ItemSwipeListener {
 
-    private val mCards: MutableList<Card> = ArrayList()
-    private val mCardAdapter = CardListAdapter(this, mCards)
+    private val cards: MutableList<Card> = ArrayList()
+    private val cardAdapter = CardListAdapter(this, cards)
 
-    private lateinit var mCardInteractor: CardInteractor
-    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var cardInteractor: CardInteractor
+    private lateinit var recyclerView: RecyclerView
 
-    private val mViewModel: CardListViewModel by lazy {
+    private val viewModel: CardListViewModel by lazy {
         ViewModelProviders.of(this, ViewModelFactory {
-            CardListViewModel(mCardInteractor)
+            CardListViewModel(cardInteractor)
         })
                 .get(CardListViewModel::class.java)
     }
@@ -52,7 +52,7 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
 
         readArguments()
 
-        binding.setVariable(com.igor.langugecards.BR.viewModel, mViewModel)
+        binding.setVariable(com.igor.langugecards.BR.viewModel, viewModel)
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
 
@@ -61,19 +61,19 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
     override fun onStart() {
         super.onStart()
 
-        mViewModel.onScreenStart()
+        viewModel.onScreenStart()
     }
 
     override fun initViews(layout: View) {
-        mRecyclerView = layout.findViewById(R.id.card_list_recycler_view)
+        recyclerView = layout.findViewById(R.id.card_list_recycler_view)
     }
 
     override fun setUpViews() {
-        mRecyclerView.adapter = mCardAdapter
-        val callback = CustomItemTouchHelper(mCardAdapter)
+        recyclerView.adapter = cardAdapter
+        val callback = CustomItemTouchHelper(cardAdapter)
         val touchHelper = ItemTouchHelper(callback)
-        touchHelper.attachToRecyclerView(mRecyclerView)
-        mViewModel.mCards.observe(this, Observer { cards -> setUpCards(cards) })
+        touchHelper.attachToRecyclerView(recyclerView)
+        viewModel.mCards.observe(this, Observer { cards -> setUpCards(cards) })
 
     }
 
@@ -89,7 +89,7 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
     }
 
     override fun readArguments() {
-        mCardInteractor = AppDatabase
+        cardInteractor = AppDatabase
                 .getInstance(requireActivity())
                 .cardInteractor
     }
@@ -99,13 +99,13 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
     }
 
     override fun onItemSwipe(itemPosition: Int) {
-        mViewModel.removeCard(mCards[itemPosition].id)
-        mCards.removeAt(itemPosition)
-        mCardAdapter.notifyItemRemoved(itemPosition)
+        viewModel.removeCard(cards[itemPosition])
+        cards.removeAt(itemPosition)
+        cardAdapter.notifyItemRemoved(itemPosition)
     }
 
-    private fun setUpCards(cards: List<Card>) {
-        mCards.addAll(cards)
-        mCardAdapter.notifyDataSetChanged()
+    private fun setUpCards(cardList: List<Card>) {
+        cards.addAll(cardList)
+        cardAdapter.notifyDataSetChanged()
     }
 }
