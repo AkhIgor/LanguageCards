@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.igor.langugecards.presentation.viewmodel.LearningCardsViewModel" />
+            type="com.igor.langugecards.presentation.viewmodel.LearningCardsScrollModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,19 +21,23 @@
 
         <com.igor.langugecards.presentation.view.custom.LanguageCardView
             android:id="@+id/card"
+            app:card="@{viewModel.card}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/margin_small_giant"
             android:layout_marginTop="@dimen/margin_giant"
             android:layout_marginEnd="@dimen/margin_small_giant"
             android:layout_marginBottom="@dimen/margin_giant"
-            app:card_theme="SOME F*CKING THEME"
-            app:card_language="SOME F*CKING LANGUAGE"
-            app:card_word="SOME F*CKING WORD"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <!--
+                    app:card_language="@{viewModel.flipped ? viewModel.card.fromLanguage : viewModel.card.toLanguage}"
+                    app:card_theme="@{viewModel.card.theme}"
+                    app:card_word="@{viewModel.flipped ? viewModel.card.nativeWord : viewModel.card.translatedWord}"
+                    -->
 
         <ProgressBar
             android:layout_width="wrap_content"

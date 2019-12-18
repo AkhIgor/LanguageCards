@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
+import static androidx.core.util.Preconditions.checkNotNull;
+
 @Entity
 public class Card {
 
@@ -21,16 +23,16 @@ public class Card {
 
     public Card(@NonNull String fromLanguage,
                 @NonNull String toLanguage,
-                @Nullable String theme,
+                @NonNull String theme,
                 @NonNull String nativeWord,
-                @Nullable String transcription,
+                @NonNull String transcription,
                 @NonNull String translatedWord) {
-        mFromLanguage = fromLanguage;
-        mToLanguage = toLanguage;
-        mTheme = theme;
-        mNativeWord = nativeWord;
-        mTranscription = transcription;
-        mTranslatedWord = translatedWord;
+        mFromLanguage = checkNotNull(fromLanguage);
+        mToLanguage = checkNotNull(toLanguage);
+        mTheme = checkNotNull(theme);
+        mNativeWord = checkNotNull(nativeWord);
+        mTranscription = checkNotNull(transcription);
+        mTranslatedWord = checkNotNull(translatedWord);
     }
 
     public long getId() {

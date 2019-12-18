@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.igor.langugecards.R
@@ -13,21 +12,22 @@ import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.databinding.LearningCardsDataBinding
 import com.igor.langugecards.model.ToolbarConfiguration
 import com.igor.langugecards.presentation.view.activity.MainActivity
-import com.igor.langugecards.presentation.viewmodel.LearningCardsViewModel
+import com.igor.langugecards.presentation.view.custom.LanguageCardView
+import com.igor.langugecards.presentation.viewmodel.LearningCardsScrollModel
 import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory
 import io.reactivex.disposables.CompositeDisposable
 
 class LearningCardsFragment : ApplicationFragment() {
 
     private lateinit var cardInteractor: CardInteractor
-    private lateinit var cardView: CardView
+    private lateinit var cardView: LanguageCardView
 
-    private val viewModel: LearningCardsViewModel by lazy {
+    private val viewModel: LearningCardsScrollModel by lazy {
         ViewModelProviders.of(this, ViewModelFactory {
-            LearningCardsViewModel(cardInteractor,
+            LearningCardsScrollModel(cardInteractor,
                     CompositeDisposable())
         })
-                .get(LearningCardsViewModel::class.java)
+                .get(LearningCardsScrollModel::class.java)
     }
 
     companion object LearningCardsFragmentFactory {
@@ -45,9 +45,11 @@ class LearningCardsFragment : ApplicationFragment() {
         readArguments()
 
         binding.setVariable(com.igor.langugecards.BR.viewModel, viewModel)
-        binding.setLifecycleOwner(viewLifecycleOwner)
-        return binding.getRoot()
+        binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.onScreenStart()
+
+        return binding.root
     }
 
     override fun initViews(layout: View) {
@@ -55,7 +57,7 @@ class LearningCardsFragment : ApplicationFragment() {
     }
 
     override fun setUpViews() {
-        cardView.animation
+        cardView.setViewListener(viewModel)
     }
 
     override fun setToolbar() {

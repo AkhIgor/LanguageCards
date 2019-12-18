@@ -24,22 +24,22 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 
-public class CreatingCardViewModel extends AndroidViewModel {
+import static com.igor.langugecards.constants.Constants.EMPTY_STRING;
 
-    private static final String EMPTY_STRING = "";
+public class CreatingCardViewModel extends AndroidViewModel {
 
     private final Application mApplication;
     private final TranslateInteractor mTranslateInteractor;
     private final CompositeDisposable mDisposable;
     private final CardInteractor mCardInteractor;
 
-    private String mTheme;
-    private MutableLiveData<String> mNativeWord = new MutableLiveData<>();
-    private MutableLiveData<String> mFromLanguage = new MutableLiveData<>();
-    private MutableLiveData<String> mToLanguage = new MutableLiveData<>();
+    private String mTheme = EMPTY_STRING;
+    private MutableLiveData<String> mNativeWord = new MutableLiveData<>(EMPTY_STRING);
+    private MutableLiveData<String> mFromLanguage = new MutableLiveData<>(EMPTY_STRING);
+    private MutableLiveData<String> mToLanguage = new MutableLiveData<>(EMPTY_STRING);
 
     private MutableLiveData<String> mTranslate = new MutableLiveData<>();
-    private MutableLiveData<String> mTranscription = new MutableLiveData<>();
+    private MutableLiveData<String> mTranscription = new MutableLiveData<>(EMPTY_STRING);
 
     private MutableLiveData<Boolean> mProgress = new MutableLiveData<>();
 

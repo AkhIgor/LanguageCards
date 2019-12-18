@@ -1,24 +1,39 @@
 package com.igor.langugecards.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.model.Card
+import com.igor.langugecards.presentation.view.custom.observer.LanguageCardScrollListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 
-class LearningCardsViewModel(
+class LearningCardsScrollModel(
         val cardInteractor: CardInteractor,
-        val disposable: CompositeDisposable) : ViewModel() {
+        val disposable: CompositeDisposable) : ViewModel(), LanguageCardScrollListener {
 
     private val cardList: MutableList<Card> = ArrayList()
-    val card = MutableLiveData<Card>()
-    val flipped: LiveData<Boolean> = MutableLiveData<Boolean>()
+    var card = MutableLiveData<Card>()
     val progress = MutableLiveData<Boolean>()
+
+    private var currentCardPosition: Int = 0
+
+    fun onScreenStart() {
+        readCardsFromDb()
+    }
+
+    override fun onScrollUp() {
+        currentCardPosition.inc()
+        card.postValue(cardList[currentCardPosition])
+    }
+
+    override fun onScrollDown() {
+        currentCardPosition.dec()
+        card.postValue(cardList[currentCardPosition])
+    }
 
     private fun readCardsFromDb() {
         disposable.add(
@@ -28,7 +43,8 @@ class LearningCardsViewModel(
                         .observeOn(AndroidSchedulers.mainThread())
                         .doAfterTerminate { progress.postValue(false) }
                         .map { list -> mixCards(list) }
-                        .subscribe({ resultList -> cardList.addAll(resultList) },
+                        .subscribe(
+                                { initCards(it) },
                                 { error -> showError(error.message) }
                         )
         )
@@ -56,6 +72,15 @@ class LearningCardsViewModel(
         }
 
         return cardList
+    }
+
+    private fun initCards(cards: List<Card>) {
+        if (cards.isNotEmpty()) {
+            cardList.addAll(cards)
+            card.postValue(cards[currentCardPosition])
+        } else {
+            showError("?!")
+        }
     }
 
     private fun showError(errorMessage: String?) {

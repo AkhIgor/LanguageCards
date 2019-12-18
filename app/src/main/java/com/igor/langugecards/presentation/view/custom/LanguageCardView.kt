@@ -14,9 +14,10 @@ import androidx.cardview.widget.CardView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.igor.langugecards.R
 import com.igor.langugecards.presentation.gestures.GestureListener
+import com.igor.langugecards.presentation.gestures.SwipeDirection
 import com.igor.langugecards.presentation.view.custom.extensions.dpToPx
 import com.igor.langugecards.presentation.view.custom.extensions.spToPx
-import com.igor.langugecards.presentation.view.custom.observer.LanguageCardViewListener
+import com.igor.langugecards.presentation.view.custom.observer.LanguageCardScrollListener
 
 
 class LanguageCardView @JvmOverloads constructor(
@@ -49,9 +50,9 @@ class LanguageCardView @JvmOverloads constructor(
 
     @ColorRes
     private var loadTintColor = DEFAULT_LOAD_TINT_COLOR
-    private var cardTheme: String = context.getString(R.string.not_defined)
-    private var cardLanguage: String = context.getString(R.string.not_defined)
-    private var cardWord: String = context.getString(R.string.not_defined)
+    var cardTheme: String = context.getString(R.string.not_defined)
+    var cardLanguage: String = context.getString(R.string.not_defined)
+    var cardWord: String = context.getString(R.string.not_defined)
     private var cardThemeTextSize: Float = DEFAULT_THEME_TEXT_SIZE.toFloat()
     private var cardLanguageTextSize = DEFAULT_LANGUAGE_TEXT_SIZE.toFloat()
     private var cardWordTextSize = DEFAULT_WORD_TEXT_SIZE.toFloat()
@@ -86,26 +87,28 @@ class LanguageCardView @JvmOverloads constructor(
 
     private lateinit var gestureListener: GestureListener
 
+    private lateinit var scrollListener: LanguageCardScrollListener
+
     init {
         if (attrs != null) {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.LanguageCardView)
             loadTintColor = typedArray.getResourceId(
                     R.styleable.LanguageCardView_card_load_tint, DEFAULT_LOAD_TINT_COLOR)
 
-            cardTheme = typedArray.getString(R.styleable.LanguageCardView_card_theme)
-                    ?: context.getString(R.string.not_defined)
+//            cardTheme = typedArray.getString(R.styleable.LanguageCardView_card_theme)
+//                    ?: context.getString(R.string.not_defined)
 
             cardThemeTextSize = typedArray.getDimension(R.styleable.LanguageCardView_card_theme_text_size,
                     context.spToPx(DEFAULT_THEME_TEXT_SIZE))
 
-            cardLanguage = typedArray.getString(R.styleable.LanguageCardView_card_language)
-                    ?: context.getString(R.string.not_defined)
+//            cardLanguage = typedArray.getString(R.styleable.LanguageCardView_card_language)
+//                    ?: context.getString(R.string.not_defined)
 
             cardLanguageTextSize = typedArray.getDimension(R.styleable.LanguageCardView_card_language_text_size,
                     context.spToPx(DEFAULT_LANGUAGE_TEXT_SIZE))
 
-            cardWord = typedArray.getString(R.styleable.LanguageCardView_card_word)
-                    ?: context.getString(R.string.not_defined)
+//            cardWord = typedArray.getString(R.styleable.LanguageCardView_card_word)
+//                    ?: context.getString(R.string.not_defined)
 
             cardWordTextSize = typedArray.getDimension(R.styleable.LanguageCardView_card_word_text_size,
                     context.spToPx(DEFAULT_WORD_TEXT_SIZE))
@@ -202,44 +205,46 @@ class LanguageCardView @JvmOverloads constructor(
      *
      * @param listener слушатель событий
      */
-    fun setScrollListener(listener: LanguageCardViewListener) {
-
+    fun setViewListener(listener: LanguageCardScrollListener) {
+        scrollListener = listener
     }
 
-    fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+    fun onScroll(firstMotionEvent: MotionEvent?, secondMotionEvent: MotionEvent?): Boolean {
         Log.d("CardView", "onScroll")
 
         if (animationIsRunning) {
             return false
         }
 
-        val direction = gestureListener.getSwipeDirection(e1, e2, flipped)
+        val direction = gestureListener.getSwipeDirection(firstMotionEvent, secondMotionEvent, flipped)
 
         Log.d("Direction", "Direction: $direction")
 
         return when (direction) {
-            GestureListener.Direction.LEFT -> {
+            SwipeDirection.LEFT -> {
                 flipAnimator.rotationYBy(SWIPE_TO_LEFT_DEGREE)
                 flipped = !flipped
                 flipAnimator.start()
                 true
             }
-            GestureListener.Direction.RIGHT -> {
+            SwipeDirection.RIGHT -> {
                 flipAnimator.rotationYBy(SWIPE_TO_RIGHT_DEGREE)
                 flipped = !flipped
                 flipAnimator.start()
                 true
             }
-            GestureListener.Direction.UP -> {
+            SwipeDirection.UP -> {
                 scrollAnimator.yBy(-requiredBottomPosition)
                 scrollAnimation = true
                 scrollAnimator.start()
+                scrollListener.onScrollUp()
                 true
             }
-            GestureListener.Direction.DOWN -> {
+            SwipeDirection.DOWN -> {
                 scrollAnimator.yBy(requiredBottomPosition)
                 scrollAnimation = true
                 scrollAnimator.start()
+                scrollListener.onScrollDown()
                 true
             }
             else -> false
