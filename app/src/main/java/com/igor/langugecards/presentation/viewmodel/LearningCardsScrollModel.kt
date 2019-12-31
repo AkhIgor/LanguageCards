@@ -26,12 +26,12 @@ class LearningCardsScrollModel(
     }
 
     override fun onScrollUp() {
-        currentCardPosition.inc()
+        currentCardPosition++
         card.postValue(cardList[currentCardPosition])
     }
 
     override fun onScrollDown() {
-        currentCardPosition.dec()
+        currentCardPosition--
         card.postValue(cardList[currentCardPosition])
     }
 

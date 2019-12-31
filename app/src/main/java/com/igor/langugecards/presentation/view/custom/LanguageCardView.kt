@@ -18,13 +18,15 @@ import com.igor.langugecards.presentation.gestures.SwipeDirection
 import com.igor.langugecards.presentation.view.custom.extensions.dpToPx
 import com.igor.langugecards.presentation.view.custom.extensions.spToPx
 import com.igor.langugecards.presentation.view.custom.observer.LanguageCardScrollListener
+import com.igor.langugecards.presentation.view.custom.ticker.LanguageCardViewTicker
+import com.igor.langugecards.presentation.view.custom.ticker.TickerView
 
 
 class LanguageCardView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : CardView(context, attrs, defStyleAttr), Animator.AnimatorListener {
+) : CardView(context, attrs, defStyleAttr), Animator.AnimatorListener, TickerView {
 
     companion object {
         private const val DEFAULT_LOAD_TINT_COLOR = R.color.colorShimmer
@@ -69,6 +71,8 @@ class LanguageCardView @JvmOverloads constructor(
 
     private var themeCursorY: Float = 0f
 
+    private var themeCursorX: Float = 0f
+
     private var languageCursorY: Float = 0f
 
     private var wordCursorY: Float = 0f
@@ -80,6 +84,8 @@ class LanguageCardView @JvmOverloads constructor(
     private val scrollAnimator = animate()
 
     private val appearanceAnimator = animate()
+
+    private lateinit var ticker: LanguageCardViewTicker
 
     private var animationIsRunning: Boolean = false
 
@@ -130,6 +136,7 @@ class LanguageCardView @JvmOverloads constructor(
                     .interpolator = FastOutSlowInInterpolator()
 
             gestureListener = GestureListener(context, this)
+            ticker = LanguageCardViewTicker(this)
         }
 
     }
@@ -141,14 +148,19 @@ class LanguageCardView @JvmOverloads constructor(
 
         centerX = (initialWidth / 2).toFloat()
 
+        themeCursorX = centerX
         themeCursorY = context.dpToPx(THEME_TEXT_MARGIN_TOP) + cardThemeTextSize
         languageCursorY = themeCursorY + context.dpToPx(THEME_LANGUAGE_MARGIN_TOP) + cardLanguageTextSize
         wordCursorY = languageCursorY + context.dpToPx(THEME_WORD_MARGIN_TOP) + cardWordTextSize
 
-        val themeLengthSize = cardThemeTextSize / 2 * cardTheme.length
-        val availableWidthSpace = widthMeasureSpec - (2 * context.dpToPx(SIDE_MARGIN))
-        if (themeLengthSize >= availableWidthSpace) {
+        paintBrush.textSize = cardThemeTextSize
+        paintBrush.textAlign = Paint.Align.CENTER
+
+        val themeLengthSize = paintBrush.measureText(cardTheme)
+//        val availableWidthSpace = widthMeasureSpec - (2 * context.dpToPx(SIDE_MARGIN))
+        if (themeLengthSize >= initialWidth) {
             cardThemeAnimate = true
+            ticker.startThread()
         }
     }
 
@@ -183,10 +195,10 @@ class LanguageCardView @JvmOverloads constructor(
         Log.e("CardView", "onDraw")
 
         paintBrush.textSize = cardThemeTextSize
-        paintBrush.textAlign = Paint.Align.CENTER
+//        paintBrush.textAlign = Paint.Align.CENTER
 
         setup(Color.RED, Paint.Style.FILL)
-        canvas.drawText(cardTheme, centerX, themeCursorY, paintBrush)
+        canvas.drawText(cardTheme, themeCursorX, themeCursorY, paintBrush)
 
         setup(Color.GRAY, Paint.Style.FILL)
         paintBrush.textSize = cardLanguageTextSize
@@ -249,6 +261,15 @@ class LanguageCardView @JvmOverloads constructor(
             }
             else -> false
         }
+    }
+
+    override fun updateTicker() {
+        if (cardThemeAnimate) {
+//            cardTheme = ticker.getTickeredString(cardTheme)
+            themeCursorX = ticker.updateCursorPosition(left, right, themeCursorX)
+        }
+
+        invalidate()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
