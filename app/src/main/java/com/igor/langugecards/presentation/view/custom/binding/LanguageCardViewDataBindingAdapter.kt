@@ -11,9 +11,19 @@ fun setCard(view: LanguageCardView, card: MutableLiveData<Card>) {
         with(card.value!!) {
             view.cardTheme = theme
             view.cardLanguage = fromLanguage
-            view.cardWord = nativeWord
+            view.cardNativeWord = nativeWord
+            view.cardTranslatedWord = translatedWord
+            view.dataHasChanged = true
 
-            view.invalidate()
+//             if (view.flipped) {
+//                view.cardWord = translatedWord
+//            } else {
+//                view.cardWord = nativeWord
+//            }
         }
+    }
+
+    if (!card.value?.theme.isNullOrBlank()) {
+        view.updateThemeLength()
     }
 }

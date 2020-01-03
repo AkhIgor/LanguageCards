@@ -13,7 +13,7 @@ import com.igor.langugecards.databinding.LearningCardsDataBinding
 import com.igor.langugecards.model.ToolbarConfiguration
 import com.igor.langugecards.presentation.view.activity.MainActivity
 import com.igor.langugecards.presentation.view.custom.LanguageCardView
-import com.igor.langugecards.presentation.viewmodel.LearningCardsScrollModel
+import com.igor.langugecards.presentation.viewmodel.LearningCardsViewModel
 import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory
 import io.reactivex.disposables.CompositeDisposable
 
@@ -22,12 +22,12 @@ class LearningCardsFragment : ApplicationFragment() {
     private lateinit var cardInteractor: CardInteractor
     private lateinit var cardView: LanguageCardView
 
-    private val viewModel: LearningCardsScrollModel by lazy {
+    private val viewModel: LearningCardsViewModel by lazy {
         ViewModelProviders.of(this, ViewModelFactory {
-            LearningCardsScrollModel(cardInteractor,
+            LearningCardsViewModel(cardInteractor,
                     CompositeDisposable())
         })
-                .get(LearningCardsScrollModel::class.java)
+                .get(LearningCardsViewModel::class.java)
     }
 
     companion object LearningCardsFragmentFactory {

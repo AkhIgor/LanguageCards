@@ -7,12 +7,12 @@ class LanguageCardViewTicker(
 ) : Runnable {
 
     private companion object {
-        const val SPACE_BETWEEN_CYCLE = "   "
+        const val SPACE_BETWEEN_CYCLE = "       "
         const val UPDATING_TIME = 10L
         const val UPDATING_SHIFT = 3f
     }
 
-    var animate = true
+    private var animate = false
 
     override fun run() {
         while (animate) {
@@ -22,21 +22,26 @@ class LanguageCardViewTicker(
     }
 
     fun getTickeredString(baseString: String): String {
-        val firstSubstring = baseString.substring(1, baseString.lastIndex + 1)
-        val secondSubstring = baseString[0]
-        return firstSubstring + SPACE_BETWEEN_CYCLE + secondSubstring
+        return baseString + SPACE_BETWEEN_CYCLE
     }
 
-    fun updateCursorPosition(boundaryLeft: Int, boundaryRight: Int, currentPositionX: Float): Float {
-        return if (currentPositionX <= boundaryLeft) {
-            boundaryRight.toFloat()
-        } else {
+    fun updateCursorPosition(boundaryLeft: Int, boundaryRight: Int, currentPositionX: Float, textLength: Float): Float {
+        return if ((boundaryLeft.toFloat() - textLength/2) <= currentPositionX) {
             currentPositionX - UPDATING_SHIFT
+        } else {
+            boundaryRight.toFloat() + textLength / 2
         }
     }
 
     fun startThread() {
-        Thread(this)
-                .start()
+        if (!animate) {
+            animate = true
+            Thread(this)
+                    .start()
+        }
+    }
+
+    fun stopThread() {
+        animate = false
     }
 }

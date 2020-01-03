@@ -47,5 +47,5 @@ class GestureListener(val context: Context,
         return cardView.onScroll(e1, e2)
     }
 
-    fun getSwipeDirection(e1: MotionEvent?, e2: MotionEvent?, flipped: Boolean) = swipeDirectionResolver.resolveSwipeDirection(e1, e2, flipped)
+    fun getSwipeDirection(e1: MotionEvent?, e2: MotionEvent?) = swipeDirectionResolver.resolveSwipeDirection(e1, e2)
 }

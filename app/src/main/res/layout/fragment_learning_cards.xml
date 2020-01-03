@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.igor.langugecards.presentation.viewmodel.LearningCardsScrollModel" />
+            type="com.igor.langugecards.presentation.viewmodel.LearningCardsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +27,7 @@
             android:layout_marginStart="@dimen/margin_small_giant"
             android:layout_marginTop="@dimen/margin_giant"
             android:layout_marginEnd="@dimen/margin_small_giant"
+            android:visibility="@{viewModel.progress ? View.GONE : View.VISIBLE}"
             android:layout_marginBottom="@dimen/margin_giant"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

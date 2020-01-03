@@ -11,13 +11,14 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 
-class LearningCardsScrollModel(
+class LearningCardsViewModel(
         val cardInteractor: CardInteractor,
-        val disposable: CompositeDisposable) : ViewModel(), LanguageCardScrollListener {
+        val disposable: CompositeDisposable
+) : ViewModel(), LanguageCardScrollListener {
 
     private val cardList: MutableList<Card> = ArrayList()
     var card = MutableLiveData<Card>()
-    val progress = MutableLiveData<Boolean>()
+    val progress = MutableLiveData<Boolean>(false)
 
     private var currentCardPosition: Int = 0
 
@@ -26,12 +27,20 @@ class LearningCardsScrollModel(
     }
 
     override fun onScrollUp() {
-        currentCardPosition++
+        if (currentCardPosition == cardList.lastIndex) {
+            currentCardPosition = 0
+        } else {
+            currentCardPosition++
+        }
         card.postValue(cardList[currentCardPosition])
     }
 
     override fun onScrollDown() {
-        currentCardPosition--
+        if (currentCardPosition == 0) {
+            currentCardPosition = cardList.lastIndex
+        } else {
+            currentCardPosition--
+        }
         card.postValue(cardList[currentCardPosition])
     }
 
@@ -41,11 +50,16 @@ class LearningCardsScrollModel(
                         .subscribeOn(Schedulers.io())
                         .doOnSubscribe { progress.postValue(true) }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doAfterTerminate { progress.postValue(false) }
                         .map { list -> mixCards(list) }
                         .subscribe(
-                                { initCards(it) },
-                                { error -> showError(error.message) }
+                                {
+                                    initCards(it)
+                                    progress.postValue(false)
+                                },
+                                { error ->
+                                    showError(error.message)
+                                    progress.postValue(false)
+                                }
                         )
         )
     }

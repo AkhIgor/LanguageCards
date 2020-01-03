@@ -14,13 +14,13 @@ class SwipeDirectionResolver {
     /**
      * Функция-распознователь направления свайпа
      */
-    fun resolveSwipeDirection(firstEvent: MotionEvent?, secondEvent: MotionEvent?, flipped: Boolean): SwipeDirection {
+    fun resolveSwipeDirection(firstEvent: MotionEvent?, secondEvent: MotionEvent?): SwipeDirection {
 
         if (touchEventsNotExist(firstEvent, secondEvent)) {
             return SwipeDirection.UNDEFINED
         }
 
-        val distanceX = computeDelta(flipped, firstEvent!!.x, secondEvent!!.x)
+        val distanceX = computeDelta(firstEvent!!.x, secondEvent!!.x)
         val distanceY = computeDelta(firstEvent.y, secondEvent.y)
 
         val displacementX = abs(distanceX)
@@ -42,14 +42,6 @@ class SwipeDirectionResolver {
             if (distanceY > 0) SwipeDirection.UP else SwipeDirection.DOWN
         } else {
             SwipeDirection.UNDEFINED
-        }
-    }
-
-    private fun computeDelta(flipped: Boolean, firstPoint: Float, secondPoint: Float): Float {
-        return if (flipped) {
-            firstPoint - secondPoint
-        } else {
-            secondPoint - firstPoint
         }
     }
 
