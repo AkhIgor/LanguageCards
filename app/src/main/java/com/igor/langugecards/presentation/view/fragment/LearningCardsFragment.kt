@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.igor.langugecards.R
+import com.igor.langugecards.constants.Constants
 import com.igor.langugecards.database.room.AppDatabase
 import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.databinding.LearningCardsDataBinding
+import com.igor.langugecards.model.HomeButton
 import com.igor.langugecards.model.ToolbarConfiguration
 import com.igor.langugecards.presentation.view.activity.MainActivity
 import com.igor.langugecards.presentation.view.custom.LanguageCardView
@@ -30,7 +32,9 @@ class LearningCardsFragment : ApplicationFragment() {
                 .get(LearningCardsViewModel::class.java)
     }
 
-    companion object LearningCardsFragmentFactory {
+    companion object {
+
+        @JvmStatic
         fun newInstance(): LearningCardsFragment {
             return LearningCardsFragment()
         }
@@ -61,7 +65,7 @@ class LearningCardsFragment : ApplicationFragment() {
     }
 
     override fun setToolbar() {
-        (activity as MainActivity?)!!.setToolbar(ToolbarConfiguration.getDefaultToolbarConfiguration(), false)
+        (activity as MainActivity?)!!.setToolbar(ToolbarConfiguration(HomeButton.CROSS, Constants.EMPTY_STRING))
     }
 
     override fun readArguments() {

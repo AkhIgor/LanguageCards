@@ -14,6 +14,7 @@ import com.igor.langugecards.database.room.AppDatabase
 import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.databinding.FragmentCardListDataBinding
 import com.igor.langugecards.model.Card
+import com.igor.langugecards.model.HomeButton
 import com.igor.langugecards.model.ToolbarConfiguration
 import com.igor.langugecards.presentation.view.activity.MainActivity
 import com.igor.langugecards.presentation.view.adapter.CardListAdapter
@@ -38,7 +39,9 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
                 .get(CardListViewModel::class.java)
     }
 
-    companion object CardListFragmentFactory {
+    companion object {
+
+        @JvmStatic
         fun newInstance(): CardListFragment {
             return CardListFragment()
         }
@@ -78,14 +81,15 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
     }
 
     override fun setToolbar() {
-        val configuration = ToolbarConfiguration()
-        val translateFrom = activity!!.getString(R.string.translate_from)
-        val languageFrom = ""
-        configuration.title = "$translateFrom $languageFrom"
-        val translateInto = activity!!.getString(R.string.translate_into)
-        val languageInto = ""
-        configuration.subtitle = "$translateInto $languageInto"
-        (activity as MainActivity).setToolbar(configuration, true)
+//        val configuration = ToolbarConfiguration()
+//        val translateFrom = activity!!.getString(R.string.translate_from)
+//        val languageFrom = ""
+
+//        configuration.title = "$translateFrom $languageFrom"
+//        val translateInto = activity!!.getString(R.string.translate_into)
+//        val languageInto = ""
+//        configuration.subtitle = "$translateInto $languageInto"
+        (activity as MainActivity).setToolbar(ToolbarConfiguration(HomeButton.CROSS, requireActivity().getString(R.string.app_name)))
     }
 
     override fun readArguments() {

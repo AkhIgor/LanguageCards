@@ -10,7 +10,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
-import androidx.annotation.ColorRes
 import androidx.cardview.widget.CardView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.igor.langugecards.R
@@ -51,15 +50,11 @@ class LanguageCardView @JvmOverloads constructor(
         private const val SWIPE_TO_RIGHT_DEGREE = 90f
         private const val SWIPE_TO_LEFT_DEGREE = -90f
     }
-
-    @ColorRes
-    private var loadTintColor = DEFAULT_LOAD_TINT_COLOR
+    
     var cardTheme: String = EMPTY_STRING
     var cardLanguage: String = EMPTY_STRING
     var cardNativeWord: String = EMPTY_STRING
     var cardTranslatedWord: String = EMPTY_STRING
-
-    var dataHasChanged = false
 
     private var cardThemeTextSize: Float = DEFAULT_THEME_TEXT_SIZE.toFloat()
     private var cardLanguageTextSize = DEFAULT_LANGUAGE_TEXT_SIZE.toFloat()
@@ -83,8 +78,7 @@ class LanguageCardView @JvmOverloads constructor(
 
     private var wordCursorY: Float = 0f
 
-    var flipped: Boolean = false
-        private set
+    private var flipped: Boolean = false
 
     private val flipAnimator = animate()
 
@@ -115,8 +109,6 @@ class LanguageCardView @JvmOverloads constructor(
     init {
         if (attrs != null) {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.LanguageCardView)
-            loadTintColor = typedArray.getResourceId(
-                    R.styleable.LanguageCardView_card_load_tint, DEFAULT_LOAD_TINT_COLOR)
 
             cardThemeTextSize = typedArray.getDimension(R.styleable.LanguageCardView_card_theme_text_size,
                     context.spToPx(DEFAULT_THEME_TEXT_SIZE))
@@ -271,7 +263,7 @@ class LanguageCardView @JvmOverloads constructor(
         if (themeLengthSize >= widthWithMargins) {
             startTickerAnimation()
         } else {
-            if(cardThemeAnimate) {
+            if (cardThemeAnimate) {
                 cardThemeAnimate = false
                 stopTickerAnimation()
             }
@@ -318,11 +310,6 @@ class LanguageCardView @JvmOverloads constructor(
             appearanceAnimator.alpha(1f)
             appearanceAnimator.start()
             scrollAnimation = false
-
-            if (dataHasChanged) {
-                invalidate()
-                dataHasChanged = false
-            }
         } else if (flipAnimation) {
             if (flipLTR) {
                 rotationY = SWIPE_TO_LEFT_DEGREE

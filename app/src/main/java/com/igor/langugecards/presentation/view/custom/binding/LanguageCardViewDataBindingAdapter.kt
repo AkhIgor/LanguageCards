@@ -13,13 +13,6 @@ fun setCard(view: LanguageCardView, card: MutableLiveData<Card>) {
             view.cardLanguage = fromLanguage
             view.cardNativeWord = nativeWord
             view.cardTranslatedWord = translatedWord
-            view.dataHasChanged = true
-
-//             if (view.flipped) {
-//                view.cardWord = translatedWord
-//            } else {
-//                view.cardWord = nativeWord
-//            }
         }
     }
 

@@ -146,7 +146,7 @@ public class CreatingCardViewModel extends AndroidViewModel {
                                 this::handleError));
     }
 
-    private void readTranslateSettings() {
+    public void readTranslateSettings() {
         TranslateSettings translateSettings = TranslateSettingInteractor.readTranslateSettings(mApplication.getApplicationContext());
         if (translateSettings.getLanguageCodeFrom() == null ||
                 translateSettings.getLanguageCodeFrom().isEmpty()) {

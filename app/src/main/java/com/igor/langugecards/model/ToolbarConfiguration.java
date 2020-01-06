@@ -1,37 +1,36 @@
 package com.igor.langugecards.model;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
 import com.igor.langugecards.R;
 
 public class ToolbarConfiguration {
 
     @DrawableRes
-    public static final int HOME_BUTTON_RES = R.drawable.ic_cross_24dp;
-
+    private int mHomeButtonRes;
     private String mTitle;
-    private String mSubtitle;
+
+    public ToolbarConfiguration(@NonNull HomeButton button, @NonNull String toolbarText) {
+        switch (button) {
+            case ARROW: {
+                mHomeButtonRes = R.drawable.ic_arrow_home_24dp;
+                break;
+            }
+            case CROSS: {
+                mHomeButtonRes = R.drawable.ic_cross_24dp;
+                break;
+            }
+        }
+        mTitle = toolbarText;
+    }
+
+    @DrawableRes
+    public int getHomeButtonRes() {
+        return mHomeButtonRes;
+    }
 
     public String getTitle() {
         return mTitle;
-    }
-
-    public void setTitle(String mTitle) {
-        this.mTitle = mTitle;
-    }
-
-    public String getSubtitle() {
-        return mSubtitle;
-    }
-
-    public void setSubtitle(String mSubtitle) {
-        this.mSubtitle = mSubtitle;
-    }
-
-    public static ToolbarConfiguration getDefaultToolbarConfiguration() {
-        ToolbarConfiguration configuration = new ToolbarConfiguration();
-        configuration.setTitle(null);
-        configuration.setSubtitle(null);
-        return configuration;
     }
 }

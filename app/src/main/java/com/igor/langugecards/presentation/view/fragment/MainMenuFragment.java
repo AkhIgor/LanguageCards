@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.igor.langugecards.R;
+import com.igor.langugecards.model.HomeButton;
+import com.igor.langugecards.model.ToolbarConfiguration;
 import com.igor.langugecards.presentation.view.activity.MainActivity;
 import com.igor.langugecards.presentation.viewmodel.MainMenuViewModel;
-
-import static com.igor.langugecards.model.ToolbarConfiguration.getDefaultToolbarConfiguration;
 
 public class MainMenuFragment extends ApplicationFragment {
 
@@ -47,7 +47,7 @@ public class MainMenuFragment extends ApplicationFragment {
 
     @Override
     protected void setToolbar() {
-        ((MainActivity) getActivity()).setToolbar(getDefaultToolbarConfiguration(), false);
+        ((MainActivity) getActivity()).setToolbar(new ToolbarConfiguration(HomeButton.CROSS, requireActivity().getString(R.string.add_card)));
     }
 
     @Override

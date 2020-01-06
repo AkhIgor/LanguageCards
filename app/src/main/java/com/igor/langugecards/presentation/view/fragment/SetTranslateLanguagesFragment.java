@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.igor.langugecards.R;
 import com.igor.langugecards.databinding.TranslateLanguagesDataBinding;
 import com.igor.langugecards.network.interactor.GetLanguagesInteractor;
+import com.igor.langugecards.presentation.view.activity.LanguageSettingsListener;
 import com.igor.langugecards.presentation.viewmodel.SetTranslateLanguagesViewModel;
 import com.igor.langugecards.presentation.viewmodel.factory.ViewModelFactory;
 
@@ -33,10 +34,9 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
     private ArrayAdapter<String> mAdapter;
 
-    public static SetTranslateLanguagesFragment getInstance() {
+    public static SetTranslateLanguagesFragment newInstance() {
         return new SetTranslateLanguagesFragment();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,10 +138,12 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
         switch (view.getId()) {
             case R.id.languages_list_from: {
                 mViewModel.setFromLanguage(mAdapter.getItem(position));
+                ((LanguageSettingsListener) requireActivity()).onLanguagesChanged();
                 break;
             }
             case R.id.languages_list_to: {
                 mViewModel.setTargetLanguage(mAdapter.getItem(position));
+                ((LanguageSettingsListener) requireActivity()).onLanguagesChanged();
                 break;
             }
         }

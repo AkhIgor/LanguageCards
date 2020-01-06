@@ -19,9 +19,21 @@ public class ApplicationRouterImpl implements ApplicationRouter {
 
     @Override
     public void goHome() {
+//        final FragmentContainer container = getContainer();
+//        if (container != null) {
+//            container.showHomeFragment();
+//        }
         final FragmentContainer container = getContainer();
         if (container != null) {
             container.showHomeFragment();
+        }
+    }
+
+    @Override
+    public void showMenu() {
+        final FragmentContainer container = getContainer();
+        if (container != null) {
+            container.showLanguagesMenu();
         }
     }
 
@@ -37,7 +49,7 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     public void showAllCards() {
         final FragmentContainer container = getContainer();
         if (container != null) {
-            container.showFragment(CardListFragment.CardListFragmentFactory.newInstance(), false);
+            container.showFragment(CardListFragment.newInstance(), false);
         }
     }
 
@@ -45,7 +57,7 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     public void testing() {
         final FragmentContainer container = getContainer();
         if (container != null) {
-            container.showFragment(LearningCardsFragment.LearningCardsFragmentFactory.newInstance(), true);
+            container.showFragment(LearningCardsFragment.newInstance(), true);
         }
     }
 

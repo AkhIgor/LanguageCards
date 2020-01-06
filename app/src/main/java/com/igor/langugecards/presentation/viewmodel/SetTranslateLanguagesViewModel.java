@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.network.interactor.GetLanguagesInteractor;
+import com.igor.langugecards.network.model.TranslateLanguages;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,7 +90,7 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
         mFromLanguageChangedAction.postValue(TranslateSettingInteractor.readTranslateSettings(mContext)
                 .getLanguageFrom());
         mTargetLanguageChangedAction.postValue(TranslateSettingInteractor.readTranslateSettings(mContext)
-                .getLanguageTo() );
+                .getLanguageTo());
     }
 
     private void getLanguages() {
@@ -117,5 +119,35 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
             }
         }
         return null;
+    }
+
+    //Работает некорректно - можно убрать потом
+    //Оставил на всякий случай
+    private TranslateLanguages sortLanguagesByAlphabet(@NonNull TranslateLanguages languages) {
+        Map<String, String> sortedMap = new HashMap<>();
+        String[] orderedLanguages = languages.getLanguageCodes().values().toArray(new String[0]);
+        String[] orderedKeys = languages.getLanguageCodes().keySet().toArray(new String[0]);
+        String buffer;
+
+        for (int currentPosition = 0; currentPosition < orderedLanguages.length - 1; currentPosition++) {
+            for (int nextPosition = 1; nextPosition < orderedLanguages.length; nextPosition++) {
+                if (orderedLanguages[currentPosition].compareTo(orderedLanguages[nextPosition]) > 0) {
+                    buffer = orderedLanguages[currentPosition];
+                    orderedLanguages[currentPosition] = orderedLanguages[nextPosition];
+                    orderedLanguages[nextPosition] = buffer;
+
+                    buffer = orderedKeys[currentPosition];
+                    orderedKeys[currentPosition] = orderedKeys[nextPosition];
+                    orderedKeys[nextPosition] = buffer;
+                }
+            }
+        }
+        for (int languagePos = 0; languagePos < languages.getLanguageCodes().size(); languagePos++) {
+            sortedMap.put(orderedKeys[languagePos], orderedLanguages[languagePos]);
+        }
+
+        languages.setLanguageCodes(sortedMap);
+
+        return languages;
     }
 }

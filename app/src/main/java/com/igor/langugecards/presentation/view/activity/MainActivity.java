@@ -2,8 +2,6 @@ package com.igor.langugecards.presentation.view.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,15 +16,12 @@ import com.igor.langugecards.model.ToolbarConfiguration;
 import com.igor.langugecards.presentation.router.ApplicationRouter;
 import com.igor.langugecards.presentation.router.ApplicationRouterImpl;
 import com.igor.langugecards.presentation.router.FragmentContainer;
+import com.igor.langugecards.presentation.view.fragment.CreatingCardFragment;
 import com.igor.langugecards.presentation.view.fragment.MainMenuFragment;
 import com.igor.langugecards.presentation.view.fragment.SetTranslateLanguagesFragment;
 
-import static com.igor.langugecards.model.ToolbarConfiguration.HOME_BUTTON_RES;
-
 public class MainActivity extends AppCompatActivity
-        implements FragmentContainer {
-
-    private static final String FRAGMENT_TAG = "HOME TAG";
+        implements FragmentContainer, LanguageSettingsListener {
 
     private ApplicationRouter mRouter;
     private Class mActiveFragmentClass;
@@ -49,37 +44,11 @@ public class MainActivity extends AppCompatActivity
         showHomeFragment();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_translate_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.translate_settings: {
-                showSettings();
-                break;
-            }
+    public void setToolbar(@Nullable ToolbarConfiguration configuration) {
+        if (configuration != null) {
+            mToolbar.setTitle(configuration.getTitle());
+            mToolbar.setNavigationIcon(configuration.getHomeButtonRes());
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void setToolbar(@Nullable ToolbarConfiguration configuration, boolean showHomeButton) {
-        if (configuration == null) {
-            configuration = ToolbarConfiguration.getDefaultToolbarConfiguration();
-        }
-        if (configuration.getTitle() == null) {
-            configuration.setTitle(getString(R.string.app_name));
-        }
-        if (showHomeButton) {
-            mToolbar.setNavigationIcon(HOME_BUTTON_RES);
-        } else {
-            mToolbar.setNavigationIcon(null);
-        }
-        mToolbar.setTitle(configuration.getTitle());
-        mToolbar.setSubtitle(configuration.getSubtitle());
     }
 
     @NonNull
@@ -104,19 +73,29 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showHomeFragment() {
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment homeFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);
+        Fragment homeFragment = fragmentManager.findFragmentByTag(CreatingCardFragment.FRAGMENT_TAG);
 
         if (homeFragment == null) {
-            homeFragment = MainMenuFragment.getInstance();
+            homeFragment = CreatingCardFragment.newInstance();
         }
 
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment_container, homeFragment, FRAGMENT_TAG)
+                .replace(R.id.fragment_container, homeFragment, CreatingCardFragment.FRAGMENT_TAG)
                 .commit();
 
 
         mActiveFragmentClass = MainMenuFragment.class;
+    }
+
+    @Override
+    public void showLanguagesMenu() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction()
+                .add(R.id.fragment_container, SetTranslateLanguagesFragment.newInstance());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        mActiveFragmentClass = SetTranslateLanguagesFragment.class;
     }
 
     @Override
@@ -133,20 +112,21 @@ public class MainActivity extends AppCompatActivity
         mToolbar.setNavigationOnClickListener(v -> getRouter().goHome());
     }
 
-    private void showSettings() {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction()
-                .add(R.id.fragment_container,SetTranslateLanguagesFragment.getInstance());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        mActiveFragmentClass = SetTranslateLanguagesFragment.class;
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
         FragmentManager fm = getSupportFragmentManager();
         fm.getFragments();
+    }
+
+    @Override
+    public void onLanguagesChanged() {
+        LanguageSettingsListener translateFragment = (LanguageSettingsListener) getSupportFragmentManager()
+                .findFragmentByTag(CreatingCardFragment.FRAGMENT_TAG);
+
+        if (translateFragment != null) {
+            translateFragment.onLanguagesChanged();
+        }
     }
 }
