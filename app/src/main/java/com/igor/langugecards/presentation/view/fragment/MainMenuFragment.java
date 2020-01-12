@@ -47,7 +47,7 @@ public class MainMenuFragment extends ApplicationFragment {
 
     @Override
     protected void setToolbar() {
-        ((MainActivity) getActivity()).setToolbar(new ToolbarConfiguration(HomeButton.CROSS, requireActivity().getString(R.string.add_card)));
+        // ((MainActivity) getActivity()).setToolbar(new ToolbarConfiguration(HomeButton.CROSS, requireActivity().getString(R.string.add_card)));
     }
 
     @Override

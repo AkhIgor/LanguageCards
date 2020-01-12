@@ -13,8 +13,8 @@ public class TranslatorRequest {
         mTranslationDirection = translateDirect;
     }
 
-    public static TranslatorRequest createRequest(@NonNull String text, @Nullable String nativeLanguage, @NonNull String targetLanguage) {
-        if (nativeLanguage != null) {
+    public static TranslatorRequest createRequest(@NonNull String text, @NonNull String nativeLanguage, @NonNull String targetLanguage) {
+        if (!nativeLanguage.isEmpty()) {
             String translateDirection = getTranslateDirection(nativeLanguage, targetLanguage);
             return new TranslatorRequest(text, translateDirection);
         } else {

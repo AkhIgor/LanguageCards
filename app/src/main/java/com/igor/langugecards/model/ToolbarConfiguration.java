@@ -4,14 +4,25 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
 import com.igor.langugecards.R;
+import com.igor.langugecards.presentation.router.ApplicationRouter;
+
+import java.util.function.Consumer;
+
 
 public class ToolbarConfiguration {
 
     @DrawableRes
     private int mHomeButtonRes;
     private String mTitle;
+    private Consumer<ApplicationRouter> mActionOnButton;
 
-    public ToolbarConfiguration(@NonNull HomeButton button, @NonNull String toolbarText) {
+    /**
+     * Коснтруктор класса
+     * @param button тип кнопки для homeButton
+     * @param toolbarText текст на тулбаре
+     * @param actionOnButton действие перехода при нажатии на homeButton
+     */
+    public ToolbarConfiguration(@NonNull HomeButton button, @NonNull String toolbarText, @NonNull Consumer<ApplicationRouter> actionOnButton) {
         switch (button) {
             case ARROW: {
                 mHomeButtonRes = R.drawable.ic_arrow_home_24dp;
@@ -23,6 +34,7 @@ public class ToolbarConfiguration {
             }
         }
         mTitle = toolbarText;
+        mActionOnButton = actionOnButton;
     }
 
     @DrawableRes
@@ -32,5 +44,9 @@ public class ToolbarConfiguration {
 
     public String getTitle() {
         return mTitle;
+    }
+
+    public Consumer<ApplicationRouter> getActionOnButton() {
+        return mActionOnButton;
     }
 }

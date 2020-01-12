@@ -1,5 +1,6 @@
 package com.igor.langugecards.network.interactor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.igor.langugecards.network.model.Translate;
@@ -13,7 +14,7 @@ public class TranslateInteractor {
 
     private TranslateRepository mRepository = new TranslateRepositoryImpl();
 
-    public Observable<Translate> translate(@Nullable String text, @Nullable String from, @Nullable String to) {
+    public Observable<Translate> translate(@Nullable String text, @NonNull String from, @Nullable String to) {
         if (text != null && to != null) {
             TranslatorRequest request = TranslatorRequest.createRequest(text, from, to);
             return mRepository.getTranslate(request);

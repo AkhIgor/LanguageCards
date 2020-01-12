@@ -14,41 +14,92 @@
             type="com.igor.langugecards.presentation.viewmodel.LearningCardsViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.igor.langugecards.presentation.view.custom.LanguageCardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/margin_small_giant"
+        android:layout_marginTop="@dimen/margin_giant"
+        android:layout_marginEnd="@dimen/margin_small_giant"
+        android:layout_marginBottom="@dimen/margin_giant"
+        android:visibility="@{viewModel.progress ? View.GONE : View.VISIBLE}"
+        app:cardCornerRadius="@dimen/corner_radius_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:context=".presentation.view.fragment.LearningCardsFragment">
 
-        <com.igor.langugecards.presentation.view.custom.LanguageCardView
-            android:id="@+id/card"
-            app:card="@{viewModel.card}"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="@dimen/margin_small_giant"
-            android:layout_marginTop="@dimen/margin_giant"
-            android:layout_marginEnd="@dimen/margin_small_giant"
-            android:visibility="@{viewModel.progress ? View.GONE : View.VISIBLE}"
-            android:layout_marginBottom="@dimen/margin_giant"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <!--
-                    app:card_language="@{viewModel.flipped ? viewModel.card.fromLanguage : viewModel.card.toLanguage}"
-                    app:card_theme="@{viewModel.card.theme}"
-                    app:card_word="@{viewModel.flipped ? viewModel.card.nativeWord : viewModel.card.translatedWord}"
-                    -->
+            <TextView
+                android:id="@+id/card_theme_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent"
+                android:text="@{viewModel.theme}"
+                android:textSize="@dimen/text_size_xbig"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="theme" />
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="@{viewModel.progress ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/card_lang_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_medium"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@{viewModel.language}"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_theme_text_view"
+                tools:text="ru" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--
+                        app:card_language="@{viewModel.flipped ? viewModel.card.fromLanguage : viewModel.card.toLanguage}"
+                        app:card_theme="@{viewModel.card.theme}"
+                        app:card_word="@{viewModel.flipped ? viewModel.card.nativeWord : viewModel.card.translatedWord}"
+                        -->
+
+            <TextView
+                android:id="@+id/card_word_text_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/margin_xxmedium"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:layout_marginEnd="@dimen/margin_xxmedium"
+                android:layout_marginBottom="@dimen/margin_medium"
+                android:gravity="center"
+                android:text="@{viewModel.word}"
+                android:textSize="@dimen/text_size_big"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_lang_text_view"
+                tools:text="hello" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="@{viewModel.progress ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.igor.langugecards.presentation.view.custom.LanguageCardView>
 </layout>

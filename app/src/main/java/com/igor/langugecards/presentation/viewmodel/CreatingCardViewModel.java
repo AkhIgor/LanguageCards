@@ -49,8 +49,8 @@ public class CreatingCardViewModel extends AndroidViewModel {
 
     private SingleLiveEvent<Void> mSaveCardEvent = new SingleLiveEvent<>();
 
-    private String mFromLanguageCode;
-    private String mToLanguageCode;
+    private String mFromLanguageCode = EMPTY_STRING;
+    private String mToLanguageCode = EMPTY_STRING;
 
     public CreatingCardViewModel(@NonNull Application application,
                                  @NonNull TranslateInteractor translateInteractor,
@@ -148,10 +148,6 @@ public class CreatingCardViewModel extends AndroidViewModel {
 
     public void readTranslateSettings() {
         TranslateSettings translateSettings = TranslateSettingInteractor.readTranslateSettings(mApplication.getApplicationContext());
-        if (translateSettings.getLanguageCodeFrom() == null ||
-                translateSettings.getLanguageCodeFrom().isEmpty()) {
-            translateSettings.setLanguageFrom(translateSettings.getAutoDetectingLanguage());
-        }
         mFromLanguageCode = translateSettings.getLanguageCodeFrom();
         mToLanguageCode = translateSettings.getLanguageCodeTo();
 

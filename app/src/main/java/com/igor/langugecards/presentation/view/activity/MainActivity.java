@@ -2,6 +2,7 @@ package com.igor.langugecards.presentation.view.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity
         if (configuration != null) {
             mToolbar.setTitle(configuration.getTitle());
             mToolbar.setNavigationIcon(configuration.getHomeButtonRes());
+            mToolbar.setNavigationOnClickListener(v -> configuration.getActionOnButton().accept(mRouter));
+        } else {
+            mToolbar.setVisibility(View.GONE);
         }
     }
 

@@ -13,6 +13,7 @@ import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.databinding.LearningCardsDataBinding
 import com.igor.langugecards.model.HomeButton
 import com.igor.langugecards.model.ToolbarConfiguration
+import com.igor.langugecards.presentation.router.ApplicationRouter
 import com.igor.langugecards.presentation.view.activity.MainActivity
 import com.igor.langugecards.presentation.view.custom.LanguageCardView
 import com.igor.langugecards.presentation.viewmodel.LearningCardsViewModel
@@ -33,6 +34,8 @@ class LearningCardsFragment : ApplicationFragment() {
     }
 
     companion object {
+        const val FRAGMENT_TAG = "CreatingCardFragment"
+        const val API = "jkmnkjn"
 
         @JvmStatic
         fun newInstance(): LearningCardsFragment {
@@ -65,7 +68,8 @@ class LearningCardsFragment : ApplicationFragment() {
     }
 
     override fun setToolbar() {
-        (activity as MainActivity?)!!.setToolbar(ToolbarConfiguration(HomeButton.CROSS, Constants.EMPTY_STRING))
+        val configuration = ToolbarConfiguration(HomeButton.CROSS, "Translator", ApplicationRouter::showAllCards)
+        (requireActivity() as MainActivity).setToolbar(configuration)
     }
 
     override fun readArguments() {
