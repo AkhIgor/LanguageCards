@@ -7,8 +7,10 @@ import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import com.igor.langugecards.presentation.view.custom.LanguageCardView
 
-class GestureListener(val context: Context,
-                      private val cardView: LanguageCardView) : GestureDetector.OnGestureListener {
+class GestureListener(
+    context: Context,
+    private val cardView: LanguageCardView
+) : GestureDetector.OnGestureListener {
 
     private val swipeDirectionResolver: SwipeDirectionResolver = SwipeDirectionResolver()
     private val detector: GestureDetectorCompat = GestureDetectorCompat(context, this)

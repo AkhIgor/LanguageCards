@@ -1,45 +1,25 @@
 package com.igor.langugecards.presentation.view.custom
 
-import android.animation.Animator
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.igor.langugecards.R
 import com.igor.langugecards.presentation.gestures.GestureListener
 import com.igor.langugecards.presentation.gestures.SwipeDirection
-import com.igor.langugecards.presentation.view.custom.extensions.dpToPx
 import com.igor.langugecards.presentation.view.custom.observer.LanguageCardGestureListener
-import com.igor.langugecards.presentation.view.custom.ticker.LanguageCardViewTicker
-import com.igor.langugecards.presentation.view.custom.ticker.TickerView
 
 class LanguageCardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : CardView(context, attrs, defStyleAttr), Animator.AnimatorListener {
+) : CardView(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val DEFAULT_LOAD_TINT_COLOR = R.color.colorShimmer
-        private const val DEFAULT_SIZE = 40
-
-        private const val SIDE_MARGINS = 32
-
-        private const val DEFAULT_THEME_TEXT_SIZE = 28
-        private const val DEFAULT_LANGUAGE_TEXT_SIZE = 18
-        private const val DEFAULT_WORD_TEXT_SIZE = 24
-
-        private const val THEME_TEXT_MARGIN_TOP = 16
-        private const val THEME_LANGUAGE_MARGIN_TOP = 48
-        private const val THEME_WORD_MARGIN_TOP = 120
-
         private const val FLIPPING_ANIMATION_DURATION: Long = 500
         private const val SCROLLING_ANIMATION_DURATION: Long = 700
         private const val APPEARANCE_ANIMATION_DURATION: Long = 300
@@ -49,30 +29,16 @@ class LanguageCardView @JvmOverloads constructor(
     }
 
     private var requiredTopPosition = 0f
+
     private var requiredBottomPosition = 0f
-
-    private val paintBrush = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val viewRect = Rect()
-
-    private var cardThemeAnimate: Boolean = false
-
-    private var centerX: Float = 0f
-
-    private var themeCursorY: Float = 0f
-
-    private var themeCursorX: Float = 0f
-
-    private var languageCursorY: Float = 0f
-
-    private var wordCursorY: Float = 0f
-
-    private var flipped: Boolean = false
 
     private val flipAnimator = animate()
 
     private val scrollAnimator = animate()
 
     private val appearanceAnimator = animate()
+
+    private var flipped: Boolean = false
 
     private var animationIsRunning: Boolean = false
 
@@ -86,36 +52,20 @@ class LanguageCardView @JvmOverloads constructor(
 
     private var flipLTR: Boolean = false
 
-    var themeLengthSize = 0f
-
-    private lateinit var mGestureListener: LanguageCardGestureListener
+    private lateinit var gestureManagerListener: LanguageCardGestureListener
 
     init {
-        flipAnimator
-            .setDuration(FLIPPING_ANIMATION_DURATION)
-            .setListener(this)
-            .interpolator = FastOutSlowInInterpolator()
+        flipAnimator.duration = FLIPPING_ANIMATION_DURATION
+            // .setListener(this)
 
         scrollAnimator
             .setDuration(SCROLLING_ANIMATION_DURATION)
-            .setListener(this)
+            // .setListener(this)
             .interpolator = FastOutSlowInInterpolator()
 
         appearanceAnimator
             .setDuration(APPEARANCE_ANIMATION_DURATION)
             .interpolator = FastOutSlowInInterpolator()
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-
-        if (w == 0) return
-        with(viewRect) {
-            left = 0
-            top = 0
-            right = w
-            bottom = h
-        }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -139,7 +89,7 @@ class LanguageCardView @JvmOverloads constructor(
      * @param listener слушатель событий
      */
     fun setViewListener(listener: LanguageCardGestureListener) {
-        mGestureListener = listener
+        gestureManagerListener = listener
     }
 
     fun onScroll(firstMotionEvent: MotionEvent?, secondMotionEvent: MotionEvent?): Boolean {
@@ -155,81 +105,96 @@ class LanguageCardView @JvmOverloads constructor(
 
         return when (direction) {
             SwipeDirection.LEFT -> {
-                flipAnimator.rotationYBy(SWIPE_TO_LEFT_DEGREE)
+                // flipAnimator.rotationYBy(SWIPE_TO_LEFT_DEGREE)
                 flipAnimation = true
                 flipRTL = true
                 flipped = !flipped
                 flipAnimator.start()
+                gestureManagerListener.onFlip(flipped)
                 true
             }
             SwipeDirection.RIGHT -> {
-                flipAnimator.rotationYBy(SWIPE_TO_RIGHT_DEGREE)
+                flipAnimator.yBy(-requiredBottomPosition)
                 flipAnimation = true
                 flipLTR = true
                 flipped = !flipped
                 flipAnimator.start()
+                gestureManagerListener.onFlip(flipped)
                 true
             }
             SwipeDirection.UP -> {
                 scrollAnimator.yBy(-requiredBottomPosition)
                 scrollAnimation = true
                 scrollAnimator.start()
-                mGestureListener.onScrollUp()
+                gestureManagerListener.onScrollUp()
                 true
             }
             SwipeDirection.DOWN -> {
                 scrollAnimator.yBy(requiredBottomPosition)
                 scrollAnimation = true
                 scrollAnimator.start()
-                mGestureListener.onScrollDown()
+                gestureManagerListener.onScrollDown()
                 true
             }
             else -> false
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    override fun performClick(): Boolean {
+        super.performClick()
+        launchMissile()
+
+        return true
+    }
+
+    private fun launchMissile() {
+        Toast.makeText(context, "Missile launched", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return if (gestureListener.onTouchEvent(event)) {
             true
         } else {
             super.onTouchEvent(event)
+            performClick()
         }
     }
-
-    override fun onAnimationRepeat(animation: Animator?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onAnimationEnd(animation: Animator?) {
-        animationIsRunning = false
-        if (scrollAnimation) {
-            alpha = 0f
-            y = requiredTopPosition      //300
-            appearanceAnimator.alpha(1f)
-            appearanceAnimator.start()
-            scrollAnimation = false
-        } else if (flipAnimation) {
-            if (flipLTR) {
-                rotationY = SWIPE_TO_LEFT_DEGREE
-                flipAnimator.rotationYBy(SWIPE_TO_RIGHT_DEGREE)
-                flipLTR = false
-                flipAnimator.start()
-            } else if (flipRTL) {
-                rotationY = SWIPE_TO_RIGHT_DEGREE
-                flipAnimator.rotationYBy(SWIPE_TO_LEFT_DEGREE)
-                flipRTL = false
-                flipAnimator.start()
-            }
-        }
-    }
-
-    override fun onAnimationCancel(animation: Animator?) {
-        animationIsRunning = false
-        scrollAnimation = false
-    }
-
-    override fun onAnimationStart(animation: Animator?) {
-        animationIsRunning = true
-    }
+    //
+    // override fun onAnimationRepeat(animation: Animator?) {
+    //
+    // }
+    //
+    // override fun onAnimationEnd(animation: Animator?) {
+    //     animationIsRunning = false
+    //     if (scrollAnimation) {
+    //         alpha = 0f
+    //         y = requiredTopPosition      //300
+    //         appearanceAnimator.alpha(1f)
+    //         appearanceAnimator.start()
+    //         scrollAnimation = false
+    //     } else if (flipAnimation) {
+    //         if (flipLTR) {
+    //             rotationY = SWIPE_TO_LEFT_DEGREE
+    //             flipAnimator.rotationYBy(SWIPE_TO_RIGHT_DEGREE)
+    //             flipLTR = false
+    //             flipAnimator.start()
+    //             flipAnimation = false
+    //         } else if (flipRTL) {
+    //             rotationY = SWIPE_TO_RIGHT_DEGREE
+    //             flipAnimator.rotationYBy(SWIPE_TO_LEFT_DEGREE)
+    //             flipRTL = false
+    //             flipAnimator.start()
+    //             flipAnimation = false
+    //         }
+    //     }
+    // }
+    //
+    // override fun onAnimationCancel(animation: Animator?) {
+    //     animationIsRunning = false
+    //     scrollAnimation = false
+    // }
+    //
+    // override fun onAnimationStart(animation: Animator?) {
+    //     animationIsRunning = true
+    // }
 }

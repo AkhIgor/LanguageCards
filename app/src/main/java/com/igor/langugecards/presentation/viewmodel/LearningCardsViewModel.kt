@@ -68,10 +68,12 @@ class LearningCardsViewModel(
                     {
                         initCards(it)
                         progress.postValue(false)
+                        disposable.clear()
                     },
                     { error ->
                         showError(error.message)
                         progress.postValue(false)
+                        disposable.clear()
                     }
                 )
         )
