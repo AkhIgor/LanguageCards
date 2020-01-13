@@ -24,6 +24,7 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingBottom="@dimen/margin_giant"
+            android:visibility="@{viewModel.listIsEmpty ? View.GONE : View.VISIBLE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/card_item_list" />
 
@@ -34,7 +35,22 @@
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.mProgressEvent ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.progressEvent ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:gravity="center"
+            android:text="@string/card_list_is_empty"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_size_big"
+            android:visibility="@{viewModel.listIsEmpty ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +64,9 @@
             android:layout_marginEnd="@dimen/margin_medium"
             android:layout_marginBottom="@dimen/margin_medium"
             android:background="@color/colorAccent"
+            android:text="@string/learn_words"
+            android:textColor="@color/colorPrimaryBright"
+            android:visibility="@{viewModel.listIsEmpty ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

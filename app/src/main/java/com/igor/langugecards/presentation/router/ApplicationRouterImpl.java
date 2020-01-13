@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.igor.langugecards.presentation.view.fragment.CardListFragment;
-import com.igor.langugecards.presentation.view.fragment.CreatingCardFragment;
 import com.igor.langugecards.presentation.view.fragment.LearningCardsFragment;
 
 import java.lang.ref.WeakReference;
@@ -18,11 +17,7 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     }
 
     @Override
-    public void goHome() {
-//        final FragmentContainer container = getContainer();
-//        if (container != null) {
-//            container.showHomeFragment();
-//        }
+    public void showTranslateScreen() {
         final FragmentContainer container = getContainer();
         if (container != null) {
             container.showHomeFragment();
@@ -38,26 +33,18 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     }
 
     @Override
-    public void createNewCard() {
-        final FragmentContainer container = getContainer();
-        if (container != null) {
-            container.showFragment(CreatingCardFragment.newInstance(), false);
-        }
-    }
-
-    @Override
     public void showAllCards() {
         final FragmentContainer container = getContainer();
         if (container != null) {
-            container.showFragment(CardListFragment.newInstance(), false);
+            container.showFragment(CardListFragment.newInstance());
         }
     }
 
     @Override
-    public void testing() {
+    public void showLearningScreen() {
         final FragmentContainer container = getContainer();
         if (container != null) {
-            container.showFragment(LearningCardsFragment.newInstance(), true);
+            container.showFragment(LearningCardsFragment.newInstance());
         }
     }
 

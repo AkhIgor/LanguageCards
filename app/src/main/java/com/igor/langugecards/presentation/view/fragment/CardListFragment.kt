@@ -80,12 +80,12 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
         val callback = CustomItemTouchHelper(cardAdapter)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView)
-        viewModel.mCards.observe(this, Observer { cards -> setUpCards(cards) })
-        learnButton.setOnClickListener { router.testing() }
+        viewModel.cards.observe(this, Observer { cards -> setUpCards(cards) })
+        learnButton.setOnClickListener { router.showLearningScreen() }
     }
 
     override fun setToolbar() {
-        val configuration = ToolbarConfiguration(HomeButton.CROSS, "Translator", ApplicationRouter::createNewCard)
+        val configuration = ToolbarConfiguration(HomeButton.LIST, requireActivity().getString(R.string.card_list_fragment_title), ApplicationRouter::showTranslateScreen)
         (requireActivity() as MainActivity).setToolbar(configuration)
     }
 
@@ -100,13 +100,15 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
     }
 
     override fun onItemSwipe(itemPosition: Int) {
-        viewModel.removeCard(cards[itemPosition])
+        viewModel.removeCard(itemPosition)
         cards.removeAt(itemPosition)
         cardAdapter.notifyItemRemoved(itemPosition)
     }
 
     private fun setUpCards(cardList: List<Card>) {
-        cards.addAll(cardList)
-        cardAdapter.notifyDataSetChanged()
+        if(cards.isNullOrEmpty()) {
+            cards.addAll(cardList)
+            cardAdapter.notifyDataSetChanged()
+        }
     }
 }

@@ -100,7 +100,7 @@ public class CreatingCardFragment extends ApplicationFragment
 
     @Override
     protected void setToolbar() {
-        ToolbarConfiguration configuration = new ToolbarConfiguration(HomeButton.ARROW, "Translator", ApplicationRouter::showAllCards);
+        ToolbarConfiguration configuration = new ToolbarConfiguration(HomeButton.ARROW, requireActivity().getString(R.string.translate_fragment_title), ApplicationRouter::showAllCards);
         ((MainActivity) requireActivity()).setToolbar(configuration);
 
     }

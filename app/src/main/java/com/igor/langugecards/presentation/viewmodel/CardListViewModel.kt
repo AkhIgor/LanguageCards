@@ -10,49 +10,65 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class CardListViewModel(
-        private val mCardInteractor: CardInteractor) : ViewModel() {
+    private val cardInteractor: CardInteractor
+) : ViewModel() {
 
-    val mProgressEvent = MutableLiveData<Boolean>()
-    val mCards = MutableLiveData<List<Card>>()
-    private val mDisposable = CompositeDisposable()
+    val progressEvent = MutableLiveData<Boolean>()
+    val listIsEmpty = MutableLiveData<Boolean>(false)
+    val cards = MutableLiveData<MutableList<Card>>()
+    private val disposable = CompositeDisposable()
 
     fun onScreenStart() {
         loadCards()
     }
 
-    fun removeCard(card: Card) {
-        mDisposable.add(
-                Completable.fromAction { mCardInteractor.deleteCard(card) }
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(
-                                { showMessage() },
-                                { handleError(it) }
-                        )
-        )
+    fun removeCard(cardPosition: Int) {
+        if (!cards.value.isNullOrEmpty()) {
+            val card = cards.value!![cardPosition]
+            disposable.add(
+                Completable.fromAction { cardInteractor.deleteCard(card) }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        { onSuccessRemove(cardPosition) },
+                        { handleError(it) }
+                    )
+            )
+        }
     }
 
     private fun loadCards() {
-        mDisposable.add(mCardInteractor.getAllCards()
-                .doOnSubscribe { mProgressEvent.postValue(true) }
-                .subscribe(
-                        { cards ->
-                            mCards.postValue(cards)
-                            mProgressEvent.postValue(false)
-                            mDisposable.clear()
-                        },
-                        { error ->
-                            handleError(error)
-                            mDisposable.clear()
-                        }
-                )
+        disposable.add(cardInteractor.getAllCards()
+            .doOnSubscribe { progressEvent.postValue(true) }
+            .subscribe(
+                { cardList ->
+                    if (cardList.isNullOrEmpty()) {
+                        listIsEmpty.postValue(true)
+                    } else {
+                        cards.postValue(cardList)
+                    }
+                    progressEvent.postValue(false)
+                    disposable.clear()
+                },
+                { error ->
+                    handleError(error)
+                    disposable.clear()
+                }
+            )
         )
     }
 
-    private fun showMessage() {
-
+    private fun onSuccessRemove(cardPosition: Int) {
+        showMessage()
+        cards.value!!.removeAt(cardPosition)
+        if (cards.value.isNullOrEmpty()) {
+            listIsEmpty.postValue(true)
+        }
     }
 
     private fun handleError(@NonNull throwable: Throwable) {
-        mProgressEvent.postValue(false)
+        progressEvent.postValue(false)
+    }
+
+    private fun showMessage() {
     }
 }

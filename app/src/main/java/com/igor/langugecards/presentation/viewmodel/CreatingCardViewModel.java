@@ -4,9 +4,9 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.database.room.DAO.CardInteractor;
@@ -26,7 +26,9 @@ import io.reactivex.subjects.BehaviorSubject;
 
 import static com.igor.langugecards.constants.Constants.EMPTY_STRING;
 
-public class CreatingCardViewModel extends AndroidViewModel {
+public class CreatingCardViewModel extends ViewModel {
+
+    private static final int TRANSLATE_DEBOUNCE_TIME = 250;
 
     private final Application mApplication;
     private final TranslateInteractor mTranslateInteractor;
@@ -55,14 +57,13 @@ public class CreatingCardViewModel extends AndroidViewModel {
     public CreatingCardViewModel(@NonNull Application application,
                                  @NonNull TranslateInteractor translateInteractor,
                                  @NonNull CardInteractor cardInteractor) {
-        super(application);
         mApplication = application;
         mTranslateInteractor = translateInteractor;
         mDisposable = new CompositeDisposable();
         mCardInteractor = cardInteractor;
 
         mDisposable.add(mUserInputSubject
-                .debounce(250, TimeUnit.MILLISECONDS)
+                .debounce(TRANSLATE_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

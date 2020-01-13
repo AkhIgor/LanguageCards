@@ -2,13 +2,11 @@ package com.igor.langugecards.presentation.router;
 
 public interface ApplicationRouter {
 
-    void goHome();
+    void showTranslateScreen();
 
     void showMenu();
 
-    void createNewCard();
-
     void showAllCards();
 
-    void testing();
+    void showLearningScreen();
 }

@@ -1,11 +1,8 @@
 package com.igor.langugecards.presentation.view.activity;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -18,7 +15,6 @@ import com.igor.langugecards.presentation.router.ApplicationRouter;
 import com.igor.langugecards.presentation.router.ApplicationRouterImpl;
 import com.igor.langugecards.presentation.router.FragmentContainer;
 import com.igor.langugecards.presentation.view.fragment.CreatingCardFragment;
-import com.igor.langugecards.presentation.view.fragment.MainMenuFragment;
 import com.igor.langugecards.presentation.view.fragment.SetTranslateLanguagesFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -45,51 +41,39 @@ public class MainActivity extends AppCompatActivity
         showHomeFragment();
     }
 
-    public void setToolbar(@Nullable ToolbarConfiguration configuration) {
-        if (configuration != null) {
-            mToolbar.setTitle(configuration.getTitle());
-            mToolbar.setNavigationIcon(configuration.getHomeButtonRes());
-            mToolbar.setNavigationOnClickListener(v -> configuration.getActionOnButton().accept(mRouter));
-        } else {
-            mToolbar.setVisibility(View.GONE);
-        }
-    }
-
-    @NonNull
-    @Override
-    public Context getActivityContext() {
-        return this;
+    public void setToolbar(@NonNull ToolbarConfiguration configuration) {
+        mToolbar.setTitle(configuration.getTitle());
+        mToolbar.setNavigationIcon(configuration.getHomeButtonRes());
+        mToolbar.setNavigationOnClickListener(v -> configuration.getActionOnButton().accept(mRouter));
     }
 
     @Override
-    public void showFragment(@NonNull Fragment fragment, boolean addToBackStack) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm
+    public void showFragment(@NonNull Fragment fragment) {
+        getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, fragment);
-        if (addToBackStack) {
-            fragmentTransaction.addToBackStack(null);
-        }
-        fragmentTransaction.commit();
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .replace(R.id.fragment_container, fragment)
+                .commit();
         mActiveFragmentClass = fragment.getClass();
     }
 
     @Override
     public void showHomeFragment() {
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment homeFragment = fragmentManager.findFragmentByTag(CreatingCardFragment.FRAGMENT_TAG);
+        Fragment initialFragment = fragmentManager.findFragmentByTag(CreatingCardFragment.FRAGMENT_TAG);
 
-        if (homeFragment == null) {
-            homeFragment = CreatingCardFragment.newInstance();
+        if (initialFragment == null) {
+            initialFragment = CreatingCardFragment.newInstance();
         }
 
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment_container, homeFragment, CreatingCardFragment.FRAGMENT_TAG)
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.fade_out)
+                .replace(R.id.fragment_container, initialFragment, CreatingCardFragment.FRAGMENT_TAG)
                 .commit();
 
 
-        mActiveFragmentClass = MainMenuFragment.class;
+        mActiveFragmentClass = CreatingCardFragment.class;
     }
 
     @Override
@@ -97,14 +81,9 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction()
                 .add(R.id.fragment_container, SetTranslateLanguagesFragment.newInstance());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentTransaction.addToBackStack(null)
+                .commit();
         mActiveFragmentClass = SetTranslateLanguagesFragment.class;
-    }
-
-    @Override
-    public void popBackStack() {
-
     }
 
     public ApplicationRouter getRouter() {
@@ -113,7 +92,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setupViews() {
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(v -> getRouter().goHome());
+        mToolbar.setNavigationOnClickListener(v -> getRouter().showTranslateScreen());
     }
 
     @Override

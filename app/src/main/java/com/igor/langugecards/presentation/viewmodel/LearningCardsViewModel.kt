@@ -2,6 +2,7 @@ package com.igor.langugecards.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.igor.langugecards.constants.Constants
 import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.model.Card
 import com.igor.langugecards.presentation.view.custom.observer.LanguageCardGestureListener

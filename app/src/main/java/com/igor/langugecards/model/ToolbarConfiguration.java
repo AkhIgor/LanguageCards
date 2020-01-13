@@ -32,6 +32,10 @@ public class ToolbarConfiguration {
                 mHomeButtonRes = R.drawable.ic_cross_24dp;
                 break;
             }
+            case LIST: {
+                mHomeButtonRes = R.drawable.ic_card_list;
+                break;
+            }
         }
         mTitle = toolbarText;
         mActionOnButton = actionOnButton;

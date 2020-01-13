@@ -13,13 +13,12 @@ import static com.igor.langugecards.constants.Constants.EMPTY_STRING;
 
 public class TranslateSettingInteractor {
 
-    private static final String TRANSLATE_PREFERENCES = "TRANSLATE ";
-
-    private static final String LANGUAGE = " LANGUAGE";
-    private static final String LANGUAGE_CODE = " LANGUAGE CODE";
-
     public static final String FROM = "from";
     public static final String TO = "to";
+
+    private static final String TRANSLATE_PREFERENCES = "TRANSLATE ";
+    private static final String LANGUAGE = " LANGUAGE";
+    private static final String LANGUAGE_CODE = " LANGUAGE CODE";
 
     public static void writeTranslateSettings(@NonNull String tag,
                                               @NonNull Context context,
@@ -36,7 +35,7 @@ public class TranslateSettingInteractor {
         SharedPreferences translatePrefs = context.getSharedPreferences(TRANSLATE_PREFERENCES, Context.MODE_PRIVATE);
         String fromLang = translatePrefs.getString(TRANSLATE_PREFERENCES + FROM + LANGUAGE, context.getString(R.string.auto_detecting));
         String fromLangCode = translatePrefs.getString(TRANSLATE_PREFERENCES + FROM + LANGUAGE_CODE, EMPTY_STRING);
-        String toLang = translatePrefs.getString(TRANSLATE_PREFERENCES + TO + LANGUAGE, EMPTY_STRING);
+        String toLang = translatePrefs.getString(TRANSLATE_PREFERENCES + TO + LANGUAGE, context.getString(R.string.not_defined));
         String toLangCode = translatePrefs.getString(TRANSLATE_PREFERENCES + TO + LANGUAGE_CODE, EMPTY_STRING);
         return new TranslateSettings(fromLang, fromLangCode, toLang, toLangCode);
     }

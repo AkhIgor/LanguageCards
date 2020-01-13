@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat.animate
+import androidx.core.view.ViewPropertyAnimatorCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.igor.langugecards.R
-import com.igor.langugecards.constants.Constants
 import com.igor.langugecards.database.room.AppDatabase
 import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.databinding.LearningCardsDataBinding
@@ -27,15 +28,15 @@ class LearningCardsFragment : ApplicationFragment() {
 
     private val viewModel: LearningCardsViewModel by lazy {
         ViewModelProviders.of(this, ViewModelFactory {
-            LearningCardsViewModel(cardInteractor,
-                    CompositeDisposable())
+            LearningCardsViewModel(
+                cardInteractor,
+                CompositeDisposable()
+            )
         })
-                .get(LearningCardsViewModel::class.java)
+            .get(LearningCardsViewModel::class.java)
     }
 
     companion object {
-        const val FRAGMENT_TAG = "CreatingCardFragment"
-        const val API = "jkmnkjn"
 
         @JvmStatic
         fun newInstance(): LearningCardsFragment {
@@ -44,10 +45,12 @@ class LearningCardsFragment : ApplicationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<LearningCardsDataBinding>(inflater,
-                layoutRes,
-                container,
-                false)
+        val binding = DataBindingUtil.inflate<LearningCardsDataBinding>(
+            inflater,
+            layoutRes,
+            container,
+            false
+        )
 
         readArguments()
 
@@ -68,14 +71,14 @@ class LearningCardsFragment : ApplicationFragment() {
     }
 
     override fun setToolbar() {
-        val configuration = ToolbarConfiguration(HomeButton.CROSS, "Translator", ApplicationRouter::showAllCards)
+        val configuration = ToolbarConfiguration(HomeButton.CROSS, requireActivity().getString(R.string.learning_fragment_title), ApplicationRouter::showAllCards)
         (requireActivity() as MainActivity).setToolbar(configuration)
     }
 
     override fun readArguments() {
         cardInteractor = AppDatabase
-                .getInstance(requireActivity())
-                .cardInteractor
+            .getInstance(requireActivity())
+            .cardInteractor
     }
 
     override fun getLayoutRes(): Int {

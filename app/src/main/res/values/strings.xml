@@ -1,19 +1,21 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Language cards</string>
 
-    <string name="create_card">Создать новую карточку</string>
-    <string name="show_cards">Открыть карточки</string>
-    <string name="theme">Тема</string>
+    <string name="translate_fragment_title">Перевод</string>
+    <string name="card_list_fragment_title">Список слов</string>
+    <string name="learning_fragment_title">Запоминание</string>
+
     <string name="enter_word">Введите слово</string>
     <string name="add_card">Добавить карточку</string>
+    <string name="learn_words">Учить слова</string>
+    <string name="theme">Тема</string>
 
+    <string name="card_list_is_empty">Список сохраненных слов пуст. Вы можете сохранить их на экране перевода текста</string>
 
     <string name="auto_detecting">Автоматически</string>
-
     <string name="choose_language_for_translate">Выберите язык для перевода</string>
-    <string name="choose_language_to_translate">Выберите язык перевода</string>
+    <string name="not_defined">Не определенно</string>
     <string name="translate_from">Перевести c:</string>
     <string name="translate_into">Перевести на:</string>
-    <string name="translate_settings">Настройки перевода</string>
     <string name="close">Закрыть</string>
 </resources>
