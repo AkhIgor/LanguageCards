@@ -2,20 +2,26 @@ package com.igor.langugecards.presentation.view.custom
 
 import android.animation.Animator
 import android.content.Context
+import android.graphics.*
+import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.widget.Toast
-import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.igor.langugecards.presentation.gestures.GestureListener
 import com.igor.langugecards.presentation.gestures.SwipeDirection
+import com.igor.langugecards.presentation.view.custom.extensions.dpToPx
 import com.igor.langugecards.presentation.view.custom.observer.LanguageCardGestureListener
 
+
 class LanguageCardView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : CardView(context, attrs, defStyleAttr), Animator.AnimatorListener {
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+) : ConstraintLayout(context, attrs, defStyleAttr), Animator.AnimatorListener {
 
     companion object {
         private const val FLIPPING_ANIMATION_DURATION: Long = 500L
@@ -54,23 +60,36 @@ class LanguageCardView @JvmOverloads constructor(
 
     private var scrollDown: Boolean = false
 
+    private lateinit var maskBitmap: Bitmap
+    private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val maskPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+    private var cornerRadius = 0f
+
+    private val CORNER_RADIUS = context.dpToPx(20)
+
     private lateinit var gestureManagerListener: LanguageCardGestureListener
 
     init {
         animate().setListener(this)
-        // flipAnimator
-        //     .setDuration(FLIPPING_ANIMATION_DURATION)
-        //     .setListener(this)
-        //     .interpolator = FastOutSlowInInterpolator()
-        //
-        // scrollAnimator
-        //     .setDuration(SCROLLING_ANIMATION_DURATION)
-        //     .setListener(this)
-        //     .interpolator = FastOutSlowInInterpolator()
-        //
-        // appearanceAnimator
-        //     .setDuration(APPEARANCE_ANIMATION_DURATION)
-        //     .interpolator = FastOutSlowInInterpolator()
+                .interpolator = FastOutSlowInInterpolator()
+
+        val metrics = context.resources.displayMetrics
+        cornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, CORNER_RADIUS, metrics)
+
+        maskPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+
+        setWillNotDraw(false)
+    }
+
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
+
+        val offscreenBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val offscreenCanvas = Canvas(offscreenBitmap)
+        super.draw(offscreenCanvas)
+        maskBitmap = createMask(width, height)
+        offscreenCanvas.drawBitmap(maskBitmap, 0f, 0f, maskPaint)
+        canvas.drawBitmap(offscreenBitmap, 0f, 0f, paint)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -105,47 +124,39 @@ class LanguageCardView @JvmOverloads constructor(
 
         return when (direction) {
             SwipeDirection.LEFT -> {
-                animate()
-                    .setDuration(FLIPPING_ANIMATION_DURATION)
-                    .setListener(this)
-                    .rotationYBy(SWIPE_TO_LEFT_DEGREE)
-                    .start()
+                animate().setDuration(FLIPPING_ANIMATION_DURATION)
+                        .rotationYBy(SWIPE_TO_LEFT_DEGREE)
+                        .start()
                 flipAnimation = true
                 flipRTL = true
                 cameraDistance = scale
-                // flipAnimator.start()
                 true
             }
             SwipeDirection.RIGHT -> {
-                animate()
-                    .setDuration(FLIPPING_ANIMATION_DURATION)
-                    .setListener(this)
-                    .rotationYBy(SWIPE_TO_LEFT_DEGREE)
-                    .start()
+                animate().setDuration(FLIPPING_ANIMATION_DURATION)
+                        .rotationYBy(SWIPE_TO_RIGHT_DEGREE)
+                        .start()
                 flipAnimation = true
                 flipLTR = true
                 cameraDistance = scale
-                // flipAnimator.start()
                 true
             }
             SwipeDirection.UP -> {
                 animate()
-                    .yBy(-requiredBottomPosition)
-                    .setDuration(SCROLLING_ANIMATION_DURATION)
-                    .start()
+                        .yBy(-requiredBottomPosition)
+                        .setDuration(SCROLLING_ANIMATION_DURATION)
+                        .start()
                 scrollAnimation = true
                 scrollUp = true
-                // scrollAnimator.start()
                 true
             }
             SwipeDirection.DOWN -> {
                 animate()
-                    .yBy(requiredBottomPosition)
-                    .setDuration(SCROLLING_ANIMATION_DURATION)
-                    .start()
+                        .yBy(requiredBottomPosition)
+                        .setDuration(SCROLLING_ANIMATION_DURATION)
+                        .start()
                 scrollAnimation = true
                 scrollDown = true
-                // scrollAnimator.start()
                 true
             }
             else -> false
@@ -188,29 +199,22 @@ class LanguageCardView @JvmOverloads constructor(
                 gestureManagerListener.onScrollDown()
             }
             scrollAnimation = false
-            animate()
-                .setDuration(APPEARANCE_ANIMATION_DURATION)
-                .alpha(1f)
-                .start()
+            animate().setDuration(APPEARANCE_ANIMATION_DURATION)
+                    .alpha(1f)
+                    .start()
         } else if (flipAnimation) {
             if (flipLTR) {
-                // // rotationY = SWIPE_TO_LEFT_DEGREE
-                // flipAnimator.rotationYBy(SWIPE_TO_RIGHT_DEGREE)
+                rotationY = SWIPE_TO_LEFT_DEGREE
                 flipLTR = false
-                animate()
-                    .rotationY(SWIPE_TO_RIGHT_DEGREE)
-                    .setDuration(FLIPPING_ANIMATION_DURATION)
-                    .start()
-                // flipAnimator.start()
+                animate().setDuration(FLIPPING_ANIMATION_DURATION)
+                        .rotationYBy(SWIPE_TO_RIGHT_DEGREE)
+                        .start()
             } else if (flipRTL) {
-                // rotationY = SWIPE_TO_RIGHT_DEGREE
-                // flipAnimator.rotationYBy(SWIPE_TO_LEFT_DEGREE)
+                rotationY = SWIPE_TO_RIGHT_DEGREE
                 flipRTL = false
-                // flipAnimator.start()
-                animate()
-                    .rotationY(SWIPE_TO_RIGHT_DEGREE)
-                    .setDuration(FLIPPING_ANIMATION_DURATION)
-                    .start()
+                animate().setDuration(FLIPPING_ANIMATION_DURATION)
+                        .rotationYBy(SWIPE_TO_LEFT_DEGREE)
+                        .start()
             }
             flipAnimation = false
             flipped = !flipped
@@ -225,5 +229,16 @@ class LanguageCardView @JvmOverloads constructor(
 
     override fun onAnimationStart(animation: Animator?) {
         animationIsRunning = true
+    }
+
+    private fun createMask(width: Int, height: Int): Bitmap {
+        val mask = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8)
+        val canvas = Canvas(mask)
+        val paint = Paint(ANTI_ALIAS_FLAG)
+        paint.color = Color.WHITE
+        canvas.drawRect(x, y, width.toFloat(), height.toFloat(), paint)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        canvas.drawRoundRect(RectF(x, y, width.toFloat(), height.toFloat()), cornerRadius, cornerRadius, paint)
+        return mask
     }
 }

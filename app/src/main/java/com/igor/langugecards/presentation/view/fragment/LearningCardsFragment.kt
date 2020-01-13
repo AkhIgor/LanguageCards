@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat.animate
-import androidx.core.view.ViewPropertyAnimatorCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.igor.langugecards.R
@@ -29,11 +27,11 @@ class LearningCardsFragment : ApplicationFragment() {
     private val viewModel: LearningCardsViewModel by lazy {
         ViewModelProviders.of(this, ViewModelFactory {
             LearningCardsViewModel(
-                cardInteractor,
-                CompositeDisposable()
+                    cardInteractor,
+                    CompositeDisposable()
             )
         })
-            .get(LearningCardsViewModel::class.java)
+                .get(LearningCardsViewModel::class.java)
     }
 
     companion object {
@@ -46,10 +44,10 @@ class LearningCardsFragment : ApplicationFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DataBindingUtil.inflate<LearningCardsDataBinding>(
-            inflater,
-            layoutRes,
-            container,
-            false
+                inflater,
+                layoutRes,
+                container,
+                false
         )
 
         readArguments()
@@ -77,8 +75,8 @@ class LearningCardsFragment : ApplicationFragment() {
 
     override fun readArguments() {
         cardInteractor = AppDatabase
-            .getInstance(requireActivity())
-            .cardInteractor
+                .getInstance(requireActivity())
+                .cardInteractor
     }
 
     override fun getLayoutRes(): Int {
