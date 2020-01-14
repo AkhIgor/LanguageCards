@@ -13,12 +13,18 @@ import static com.igor.langugecards.constants.Constants.EMPTY_STRING;
 
 public class TranslateSettingInteractor {
 
+    private final Context mContext;
+
     public static final String FROM = "from";
     public static final String TO = "to";
 
     private static final String TRANSLATE_PREFERENCES = "TRANSLATE ";
     private static final String LANGUAGE = " LANGUAGE";
     private static final String LANGUAGE_CODE = " LANGUAGE CODE";
+
+    public TranslateSettingInteractor(@NonNull Context context) {
+        mContext = context;
+    }
 
     public static void writeTranslateSettings(@NonNull String tag,
                                               @NonNull Context context,

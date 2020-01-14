@@ -1,13 +1,15 @@
 package com.igor.langugecards.presentation.view.activity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.igor.langugecards.R;
 import com.igor.langugecards.model.ToolbarConfiguration;
@@ -78,11 +80,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void showLanguagesMenu() {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction()
-                .add(R.id.fragment_container, SetTranslateLanguagesFragment.newInstance());
-        fragmentTransaction.addToBackStack(null)
+        hideKeyboard();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .add(R.id.fragment_container, SetTranslateLanguagesFragment.newInstance())
+                .addToBackStack(null)
                 .commit();
+
         mActiveFragmentClass = SetTranslateLanguagesFragment.class;
     }
 
@@ -110,6 +116,14 @@ public class MainActivity extends AppCompatActivity
 
         if (translateFragment != null) {
             translateFragment.onLanguagesChanged();
+        }
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

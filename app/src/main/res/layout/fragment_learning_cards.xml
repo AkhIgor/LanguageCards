@@ -22,19 +22,20 @@
         android:layout_marginTop="@dimen/margin_giant"
         android:layout_marginEnd="@dimen/margin_small_giant"
         android:layout_marginBottom="@dimen/margin_giant"
-        android:background="@color/colorPrimaryBright"
         android:visibility="@{viewModel.progress ? View.GONE : View.VISIBLE}"
+        app:card_tint_color="@color/colorPrimaryBright"
+        app:corner_radius="@dimen/corner_radius_medium"
         tools:context=".presentation.view.fragment.LearningCardsFragment">
 
-<!--        <View-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:background="@color/colorPrimaryBright"-->
-<!--            app:cardCornerRadius="@dimen/corner_radius_medium"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
+        <!--        <View-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            android:background="@color/colorPrimaryBright"-->
+        <!--            app:cardCornerRadius="@dimen/corner_radius_medium"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/card_theme_text_view"

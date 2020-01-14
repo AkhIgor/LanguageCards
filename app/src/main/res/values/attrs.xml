@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LanguageCardView">
-        <attr name="card_theme_text_size" format="dimension" />
-        <attr name="card_language_text_size" format="dimension" />
-        <attr name="card_word_text_size" format="dimension" />
+        <attr name="corner_radius" format="dimension" />
+        <attr name="card_tint_color" format="color" />
     </declare-styleable>
 </resources>

@@ -85,7 +85,7 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
     }
 
     override fun setToolbar() {
-        val configuration = ToolbarConfiguration(HomeButton.LIST, requireActivity().getString(R.string.card_list_fragment_title), ApplicationRouter::showTranslateScreen)
+        val configuration = ToolbarConfiguration(HomeButton.ARROW, requireActivity().getString(R.string.card_list_fragment_title), ApplicationRouter::showTranslateScreen)
         (requireActivity() as MainActivity).setToolbar(configuration)
     }
 
