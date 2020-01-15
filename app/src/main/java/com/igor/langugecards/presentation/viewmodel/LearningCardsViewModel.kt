@@ -36,6 +36,7 @@ class LearningCardsViewModel(
             currentCardPosition++
         }
         card = cardList[currentCardPosition]
+        theme.postValue(card.theme)
         language.postValue(card.fromLanguage)
         word.postValue(card.nativeWord)
     }
@@ -108,6 +109,7 @@ class LearningCardsViewModel(
         if (cards.isNotEmpty()) {
             cardList.addAll(cards)
             card = cards[currentCardPosition]
+            theme.postValue(card.theme)
             showInitialData()
         } else {
             showError("?!")

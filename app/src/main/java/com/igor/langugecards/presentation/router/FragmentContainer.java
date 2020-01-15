@@ -15,4 +15,6 @@ public interface FragmentContainer {
     void showHomeFragment();
 
     void showLanguagesMenu();
+
+    void closeLanguagesMenu();
 }

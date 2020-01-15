@@ -82,14 +82,27 @@ public class MainActivity extends AppCompatActivity
     public void showLanguagesMenu() {
         hideKeyboard();
 
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment menuFragment = fragmentManager.findFragmentByTag(SetTranslateLanguagesFragment.FRAGMENT_TAG);
+
+        if (menuFragment == null) {
+            menuFragment = SetTranslateLanguagesFragment.newInstance();
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .add(R.id.fragment_container, SetTranslateLanguagesFragment.newInstance())
-                .addToBackStack(null)
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,  android.R.anim.fade_in,  android.R.anim.fade_out)
+                .add(R.id.fragment_container, menuFragment)
+                .addToBackStack(SetTranslateLanguagesFragment.FRAGMENT_TAG)
                 .commit();
 
         mActiveFragmentClass = SetTranslateLanguagesFragment.class;
+    }
+
+    @Override
+    public void closeLanguagesMenu() {
+        getSupportFragmentManager()
+                .popBackStack();
     }
 
     public ApplicationRouter getRouter() {

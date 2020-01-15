@@ -1,8 +1,10 @@
 package com.igor.langugecards.presentation.viewmodel
 
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.igor.langugecards.R
 import com.igor.langugecards.database.room.DAO.CardInteractor
 import com.igor.langugecards.model.Card
 import io.reactivex.Completable
@@ -16,6 +18,7 @@ class CardListViewModel(
     val progressEvent = MutableLiveData<Boolean>()
     val listIsEmpty = MutableLiveData<Boolean>(false)
     val cards = MutableLiveData<MutableList<Card>>()
+    val operationStatusEvent = MutableLiveData<Int>()
     private val disposable = CompositeDisposable()
 
     fun onScreenStart() {
@@ -29,7 +32,10 @@ class CardListViewModel(
                 Completable.fromAction { cardInteractor.deleteCard(card) }
                     .subscribeOn(Schedulers.io())
                     .subscribe(
-                        { onSuccessRemove(cardPosition) },
+                        {
+                            onSuccessRemove(cardPosition)
+                            operationStatusEvent.postValue(R.string.successful_delete_operation)
+                        },
                         { handleError(it) }
                     )
             )
@@ -66,7 +72,9 @@ class CardListViewModel(
     }
 
     private fun handleError(@NonNull throwable: Throwable) {
+        Log.d("CardListViewModel", throwable.message)
         progressEvent.postValue(false)
+        operationStatusEvent.postValue(R.string.error_occured)
     }
 
     private fun showMessage() {

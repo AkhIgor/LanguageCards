@@ -10,7 +10,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.toRectF
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -28,7 +27,7 @@ class LanguageCardView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), Animator.AnimatorListener {
 
     companion object {
-        private const val FLIPPING_ANIMATION_DURATION: Long = 500L
+        private const val FLIPPING_ANIMATION_DURATION: Long = 440L
         private const val SCROLLING_ANIMATION_DURATION: Long = 700L
         private const val APPEARANCE_ANIMATION_DURATION: Long = 300L
 
@@ -67,9 +66,7 @@ class LanguageCardView @JvmOverloads constructor(
 
     private val maskPaint: Paint = Paint(ANTI_ALIAS_FLAG)
 
-    private val viewRect = Rect()
-
-    private lateinit var viewRectF: RectF
+    private val viewRect = Rect().toRectF()
 
     private lateinit var gestureManagerListener: LanguageCardGestureListener
 
@@ -111,12 +108,10 @@ class LanguageCardView @JvmOverloads constructor(
         super.onSizeChanged(w, h, oldw, oldh)
 
         with(viewRect) {
-            left = 0
-            top = 0
-            right = w
-            bottom = h
-
-            viewRectF = toRectF()
+            left = 0f
+            top = 0f
+            right = w.toFloat()
+            bottom = h.toFloat()
         }
     }
 
@@ -128,7 +123,7 @@ class LanguageCardView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawRoundRect(viewRectF, cornerRadius, cornerRadius, maskPaint)
+        canvas.drawRoundRect(viewRect, cornerRadius, cornerRadius, maskPaint)
     }
 
     /**
@@ -192,13 +187,8 @@ class LanguageCardView @JvmOverloads constructor(
 
     override fun performClick(): Boolean {
         super.performClick()
-        launchMissile()
 
-        return true
-    }
-
-    private fun launchMissile() {
-        Toast.makeText(context, "Missile launched", Toast.LENGTH_SHORT).show()
+        return false
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -217,7 +207,7 @@ class LanguageCardView @JvmOverloads constructor(
         animationIsRunning = false
         if (scrollAnimation) {
             alpha = 0f
-            y = requiredTopPosition      //300
+            y = requiredTopPosition
             if (scrollUp) {
                 scrollUp = false
                 gestureManagerListener.onScrollUp()

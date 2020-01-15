@@ -25,7 +25,7 @@ public class ApplicationRouterImpl implements ApplicationRouter {
     }
 
     @Override
-    public void showMenu() {
+    public void showSettingsMenu() {
         final FragmentContainer container = getContainer();
         if (container != null) {
             container.showLanguagesMenu();
@@ -45,6 +45,14 @@ public class ApplicationRouterImpl implements ApplicationRouter {
         final FragmentContainer container = getContainer();
         if (container != null) {
             container.showFragment(LearningCardsFragment.newInstance());
+        }
+    }
+
+    @Override
+    public void closeSettingsMenu() {
+        final FragmentContainer container = getContainer();
+        if (container != null) {
+            container.closeLanguagesMenu();
         }
     }
 

@@ -18,4 +18,8 @@
     <string name="translate_from">Перевести c:</string>
     <string name="translate_into">Перевести на:</string>
     <string name="close">Закрыть</string>
+
+    <string name="successful_adding_operation">Карточка успешно добавлена</string>
+    <string name="successful_delete_operation">Карточка успешно удалена</string>
+    <string name="error_occured">Произошла ошибка. Повторте операцию.</string>
 </resources>

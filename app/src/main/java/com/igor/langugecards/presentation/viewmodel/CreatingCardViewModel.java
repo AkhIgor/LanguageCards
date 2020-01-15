@@ -1,6 +1,5 @@
 package com.igor.langugecards.presentation.viewmodel;
 
-import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -8,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.igor.langugecards.R;
 import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.database.room.DAO.CardInteractor;
 import com.igor.langugecards.model.Card;
@@ -30,10 +30,10 @@ public class CreatingCardViewModel extends ViewModel {
 
     private static final int TRANSLATE_DEBOUNCE_TIME = 250;
 
-    private final Application mApplication;
     private final TranslateInteractor mTranslateInteractor;
     private final CompositeDisposable mDisposable;
     private final CardInteractor mCardInteractor;
+    private final TranslateSettingInteractor mTranslateSettingInteractor;
 
     private String mTheme = EMPTY_STRING;
     private MutableLiveData<String> mNativeWord = new MutableLiveData<>(EMPTY_STRING);
@@ -49,18 +49,18 @@ public class CreatingCardViewModel extends ViewModel {
 
     private MutableLiveData<TranslateSettings> mTranslateSettings = new MutableLiveData<>();
 
-    private SingleLiveEvent<Void> mSaveCardEvent = new SingleLiveEvent<>();
+    private MutableLiveData<Integer> mOperationStatusEvent = new MutableLiveData<>();
 
     private String mFromLanguageCode = EMPTY_STRING;
     private String mToLanguageCode = EMPTY_STRING;
 
-    public CreatingCardViewModel(@NonNull Application application,
-                                 @NonNull TranslateInteractor translateInteractor,
-                                 @NonNull CardInteractor cardInteractor) {
-        mApplication = application;
+    public CreatingCardViewModel(@NonNull TranslateInteractor translateInteractor,
+                                 @NonNull CardInteractor cardInteractor,
+                                 @NonNull TranslateSettingInteractor translateSettingInteractor) {
         mTranslateInteractor = translateInteractor;
         mDisposable = new CompositeDisposable();
         mCardInteractor = cardInteractor;
+        mTranslateSettingInteractor = translateSettingInteractor;
 
         mDisposable.add(mUserInputSubject
                 .debounce(TRANSLATE_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
@@ -107,8 +107,8 @@ public class CreatingCardViewModel extends ViewModel {
         return mTranslateSettings;
     }
 
-    public LiveData<Void> getSaveCardEvent() {
-        return mSaveCardEvent;
+    public LiveData<Integer> getOperationStatusEvent() {
+        return mOperationStatusEvent;
     }
 
     public void saveCard() {
@@ -148,10 +148,12 @@ public class CreatingCardViewModel extends ViewModel {
     }
 
     public void readTranslateSettings() {
-        TranslateSettings translateSettings = TranslateSettingInteractor.readTranslateSettings(mApplication.getApplicationContext());
+        TranslateSettings translateSettings = mTranslateSettingInteractor.readTranslateSettings();
         mFromLanguageCode = translateSettings.getLanguageCodeFrom();
-        mToLanguageCode = translateSettings.getLanguageCodeTo();
+        mFromLanguage.postValue(translateSettings.getLanguageFrom());
 
+        mToLanguageCode = translateSettings.getLanguageCodeTo();
+        mToLanguage.postValue(translateSettings.getLanguageTo());
         mTranslateSettings.postValue(translateSettings);
     }
 
@@ -161,6 +163,7 @@ public class CreatingCardViewModel extends ViewModel {
 
     private void handleError(@NonNull Throwable throwable) {
         Log.d("Request translate error", throwable.getMessage());
+        mOperationStatusEvent.postValue(R.string.error_occured);
     }
 
     private Observable<Card> createCard() {
@@ -179,6 +182,9 @@ public class CreatingCardViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doAfterTerminate(() -> mProgress.setValue(false))
-                        .subscribe(() -> mSaveCardEvent.call()));
+                        .subscribe(
+                                () -> mOperationStatusEvent.postValue(R.string.successful_adding_operation),
+                                this::handleError)
+        );
     }
 }

@@ -4,9 +4,11 @@ public interface ApplicationRouter {
 
     void showTranslateScreen();
 
-    void showMenu();
+    void showSettingsMenu();
 
     void showAllCards();
 
     void showLearningScreen();
+
+    void closeSettingsMenu();
 }

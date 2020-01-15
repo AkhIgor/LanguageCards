@@ -26,22 +26,21 @@ public class TranslateSettingInteractor {
         mContext = context;
     }
 
-    public static void writeTranslateSettings(@NonNull String tag,
-                                              @NonNull Context context,
+    public void writeTranslateSettings(@NonNull String tag,
                                               @Nullable String language,
                                               @Nullable String languageCode) {
-        context.getSharedPreferences(TRANSLATE_PREFERENCES, Context.MODE_PRIVATE)
+        mContext.getSharedPreferences(TRANSLATE_PREFERENCES, Context.MODE_PRIVATE)
                 .edit()
                 .putString(TRANSLATE_PREFERENCES + tag + LANGUAGE, language)
                 .putString(TRANSLATE_PREFERENCES + tag + LANGUAGE_CODE, languageCode)
                 .apply();
     }
 
-    public static TranslateSettings readTranslateSettings(@NonNull Context context) {
-        SharedPreferences translatePrefs = context.getSharedPreferences(TRANSLATE_PREFERENCES, Context.MODE_PRIVATE);
-        String fromLang = translatePrefs.getString(TRANSLATE_PREFERENCES + FROM + LANGUAGE, context.getString(R.string.auto_detecting));
+    public TranslateSettings readTranslateSettings() {
+        SharedPreferences translatePrefs = mContext.getSharedPreferences(TRANSLATE_PREFERENCES, Context.MODE_PRIVATE);
+        String fromLang = translatePrefs.getString(TRANSLATE_PREFERENCES + FROM + LANGUAGE, mContext.getString(R.string.auto_detecting));
         String fromLangCode = translatePrefs.getString(TRANSLATE_PREFERENCES + FROM + LANGUAGE_CODE, EMPTY_STRING);
-        String toLang = translatePrefs.getString(TRANSLATE_PREFERENCES + TO + LANGUAGE, context.getString(R.string.not_defined));
+        String toLang = translatePrefs.getString(TRANSLATE_PREFERENCES + TO + LANGUAGE, mContext.getString(R.string.not_defined));
         String toLangCode = translatePrefs.getString(TRANSLATE_PREFERENCES + TO + LANGUAGE_CODE, EMPTY_STRING);
         return new TranslateSettings(fromLang, fromLangCode, toLang, toLangCode);
     }

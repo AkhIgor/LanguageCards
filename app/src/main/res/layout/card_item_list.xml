@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_little"
-        android:backgroundTint="@color/colorPrimaryBright"
         android:layout_marginBottom="@dimen/margin_little"
+        android:backgroundTint="@color/colorSecondaryDark"
         app:cardCornerRadius="@dimen/corner_radius_medium">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,6 +24,7 @@
                 android:layout_marginTop="@dimen/margin_medium"
                 android:layout_marginEnd="@dimen/margin_medium"
                 android:textAllCaps="true"
+                android:textColor="@color/colorPrimaryLight"
                 android:textSize="@dimen/text_size_xbig"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +41,7 @@
                 android:layout_marginEnd="@dimen/margin_medium"
                 android:layout_marginBottom="@dimen/margin_medium"
                 android:gravity="center"
+                android:textColor="@color/colorPrimaryLight"
                 android:textSize="@dimen/text_size_xmedium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/middle"
@@ -57,6 +59,7 @@
                 android:layout_marginEnd="@dimen/margin_xmedium"
                 android:layout_marginBottom="@dimen/margin_medium"
                 android:gravity="center"
+                android:textColor="@color/colorPrimaryLight"
                 android:textSize="@dimen/text_size_xmedium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

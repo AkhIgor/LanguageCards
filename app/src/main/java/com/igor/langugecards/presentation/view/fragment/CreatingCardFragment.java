@@ -9,10 +9,12 @@ import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.igor.langugecards.R;
+import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.database.room.AppDatabase;
 import com.igor.langugecards.database.room.DAO.CardInteractor;
 import com.igor.langugecards.databinding.CreatingCardDataBinding;
@@ -43,10 +45,6 @@ public class CreatingCardFragment extends ApplicationFragment
         return new CreatingCardFragment();
     }
 
-    private CreatingCardFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         CreatingCardDataBinding binding = DataBindingUtil.inflate(inflater,
@@ -57,9 +55,11 @@ public class CreatingCardFragment extends ApplicationFragment
         readArguments();
 
         mViewModel = ViewModelProviders.of(this, new ViewModelFactory<>(
-                () -> new CreatingCardViewModel(this.requireActivity().getApplication(),
+                () -> new CreatingCardViewModel(
                         new TranslateInteractor(),
-                        mCardInteractor)))
+                        mCardInteractor,
+                        new TranslateSettingInteractor(requireActivity()))
+        ))
                 .get(CreatingCardViewModel.class);
 
         binding.setVariable(com.igor.langugecards.BR.viewModel, mViewModel);
@@ -91,7 +91,7 @@ public class CreatingCardFragment extends ApplicationFragment
     protected void setUpViews() {
         mViewModel.getTranslateSettings().observe(this, this::showSettings);
 //        mNativeWordEditText.addTextChangedListener(mViewModel); - работает точно так же, как и текущая реализация
-        mViewModel.getSaveCardEvent().observe(this, unused -> showMessage());
+        mViewModel.getOperationStatusEvent().observe(this, stringRes -> showMessage(stringRes));
 
         mFromLanguageTextView.setOnClickListener(v -> openLanguagesFragment());
         mToLanguageTextView.setOnClickListener(v -> openLanguagesFragment());
@@ -117,8 +117,8 @@ public class CreatingCardFragment extends ApplicationFragment
         mToLanguageTextView.setText(settings.getLanguageTo());
     }
 
-    private void showMessage() {
-        Toast.makeText(requireActivity(), "Success", Toast.LENGTH_SHORT).show();
+    private void showMessage(@StringRes int messageId) {
+        Toast.makeText(requireActivity(), requireActivity().getString(messageId), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -127,6 +127,6 @@ public class CreatingCardFragment extends ApplicationFragment
     }
 
     private void openLanguagesFragment() {
-        getRouter().showMenu();
+        getRouter().showSettingsMenu();
     }
 }

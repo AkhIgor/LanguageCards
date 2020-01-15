@@ -28,10 +28,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/card_item_list" />
 
-        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--        app:layout_constraintTop_toTopOf="parent"-->
-        <!--            app:layout_constraintBottom_toTopOf="@id/learn_card_button"/>-->
-
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +44,7 @@
             android:layout_marginEnd="@dimen/margin_medium"
             android:gravity="center"
             android:text="@string/card_list_is_empty"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorAccentLight"
             android:textSize="@dimen/text_size_big"
             android:visibility="@{viewModel.listIsEmpty ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -63,9 +59,9 @@
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginEnd="@dimen/margin_medium"
             android:layout_marginBottom="@dimen/margin_medium"
-            android:background="@color/colorAccent"
+            android:background="@color/colorAccentLight"
             android:text="@string/learn_words"
-            android:textColor="@color/colorPrimaryBright"
+            android:textColor="@color/colorPrimaryLight"
             android:visibility="@{viewModel.listIsEmpty ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

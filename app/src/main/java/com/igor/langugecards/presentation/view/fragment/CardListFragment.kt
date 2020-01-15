@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -81,11 +83,16 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView)
         viewModel.cards.observe(this, Observer { cards -> setUpCards(cards) })
+        viewModel.operationStatusEvent.observe(this, Observer { message -> showMessage(message) })
         learnButton.setOnClickListener { router.showLearningScreen() }
     }
 
     override fun setToolbar() {
-        val configuration = ToolbarConfiguration(HomeButton.ARROW, requireActivity().getString(R.string.card_list_fragment_title), ApplicationRouter::showTranslateScreen)
+        val configuration = ToolbarConfiguration(
+            HomeButton.ARROW,
+            requireActivity().getString(R.string.card_list_fragment_title),
+            ApplicationRouter::showTranslateScreen
+        )
         (requireActivity() as MainActivity).setToolbar(configuration)
     }
 
@@ -106,9 +113,13 @@ class CardListFragment : ApplicationFragment(), ItemSwipeListener {
     }
 
     private fun setUpCards(cardList: List<Card>) {
-        if(cards.isNullOrEmpty()) {
+        if (cards.isNullOrEmpty()) {
             cards.addAll(cardList)
             cardAdapter.notifyDataSetChanged()
         }
+    }
+
+    private fun showMessage(@StringRes message: Int) {
+        Toast.makeText(requireActivity(), requireActivity().getString(message), Toast.LENGTH_SHORT).show()
     }
 }
