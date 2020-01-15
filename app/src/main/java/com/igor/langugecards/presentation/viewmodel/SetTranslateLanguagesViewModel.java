@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.igor.langugecards.constants.Constants;
 import com.igor.langugecards.database.preferences.TranslateSettingInteractor;
 import com.igor.langugecards.network.interactor.GetLanguagesInteractor;
 import com.igor.langugecards.network.model.TranslateLanguages;
@@ -114,6 +115,7 @@ public class SetTranslateLanguagesViewModel extends ViewModel {
                     return foundKey;
                 }
             }
+            return Constants.EMPTY_STRING;
         }
         return null;
     }

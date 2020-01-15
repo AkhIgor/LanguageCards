@@ -10,10 +10,4 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_medium" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height"
-        android:layout_marginStart="@dimen/margin_giant"
-        android:background="@color/colorPrimaryDark" />
-
 </LinearLayout>

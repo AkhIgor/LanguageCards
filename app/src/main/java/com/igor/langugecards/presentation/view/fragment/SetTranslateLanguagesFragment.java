@@ -36,7 +36,8 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
 
     private SetTranslateLanguagesViewModel mViewModel;
 
-    private ArrayAdapter<String> mAdapter;
+    private ArrayAdapter<String> mFromLanguagesListAdapter;
+    private ArrayAdapter<String> mToLanguagesListAdapter;
 
     public static SetTranslateLanguagesFragment newInstance() {
         return new SetTranslateLanguagesFragment();
@@ -119,10 +120,8 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
     }
 
     private void setLanguagesToList(Collection<String> languages) {
-        mAdapter = new ArrayAdapter<>(getActivity(), R.layout.languages_list_item, R.id.language_text_view);
-        mAdapter.addAll(languages);
-        mLanguagesListFrom.setAdapter(mAdapter);
-        mLanguagesListInto.setAdapter(mAdapter);
+        initToLanguageListAdapter(languages);
+        initFromLanguageListAdapter(languages);
     }
 
     private void onLanguageSetClickListener(@NonNull ListView mainList, @NonNull ListView dependedList) {
@@ -138,15 +137,28 @@ public class SetTranslateLanguagesFragment extends ApplicationFragment {
         }
     }
 
+    private void initFromLanguageListAdapter(Collection<String> languages) {
+        mFromLanguagesListAdapter = new ArrayAdapter<>(requireActivity(), R.layout.languages_list_item, R.id.language_text_view);
+        mFromLanguagesListAdapter.add(requireActivity().getString(R.string.auto_detecting));
+        mFromLanguagesListAdapter.addAll(languages);
+        mLanguagesListFrom.setAdapter(mFromLanguagesListAdapter);
+    }
+
+    private void initToLanguageListAdapter(Collection<String> languages) {
+        mToLanguagesListAdapter = new ArrayAdapter<>(requireActivity(), R.layout.languages_list_item, R.id.language_text_view);
+        mToLanguagesListAdapter.addAll(languages);
+        mLanguagesListInto.setAdapter(mToLanguagesListAdapter);
+    }
+
     private void onListItemClickListener(View view, int position) {
         switch (view.getId()) {
             case R.id.languages_list_from: {
-                mViewModel.setFromLanguage(mAdapter.getItem(position));
+                mViewModel.setFromLanguage(mFromLanguagesListAdapter.getItem(position));
                 ((LanguageSettingsListener) requireActivity()).onLanguagesChanged();
                 break;
             }
             case R.id.languages_list_to: {
-                mViewModel.setTargetLanguage(mAdapter.getItem(position));
+                mViewModel.setTargetLanguage(mToLanguagesListAdapter.getItem(position));
                 ((LanguageSettingsListener) requireActivity()).onLanguagesChanged();
                 break;
             }
